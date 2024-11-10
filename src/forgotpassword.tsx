@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+import { baseURL } from './utils';
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
     const [token, setToken] = useState('');
@@ -16,7 +16,7 @@ const ForgotPassword = () => {
 
         setIsLoading(true);
         try {
-            const response = await fetch('http://localhost:3001/account/password-reset-request', {
+            const response = await fetch(`${baseURL}/account/password-reset-request`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email })
@@ -46,7 +46,7 @@ const ForgotPassword = () => {
 
         setIsLoading(true);
         try {
-            const response = await fetch('http://localhost:3001/account/password-reset-confirm', {
+            const response = await fetch(`${baseURL}/account/password-reset-confirm`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

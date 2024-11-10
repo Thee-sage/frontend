@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { BallManager } from "../game/classes/BallManager";
 import axios from "axios";
-
+import { baseURL } from "../utils";
 export function Game() {
     const [ballManager, setBallManager] = useState<BallManager>();
     const [ballPrice, setBallPrice] = useState<number>(1); // Default ball price to 1 Zixo
@@ -35,7 +35,7 @@ export function Game() {
                 onClick={async () => {
                     try {
                         // Sending ballPrice in the request body
-                        const response = await axios.post("http://localhost:3001/game", {
+                        const response = await axios.post(`${baseURL}/game`, {
                             userId: "user123", // Replace with the actual userId
                             ballPrice: ballPrice // Pass the user input ball price
                         });

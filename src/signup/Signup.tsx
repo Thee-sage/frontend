@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import { baseURL } from '../utils';
 const SignUp = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -9,7 +9,7 @@ const SignUp = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:3001/api/signup', {
+            const response = await fetch(`${baseURL}/api/signup`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

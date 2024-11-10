@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-
+import { baseURL } from './utils';
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -11,7 +11,7 @@ const Login = () => {
         e.preventDefault();
 
         try {
-            const response = await fetch('http://localhost:3001/api/login', {
+            const response = await fetch(`${baseURL}/api/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

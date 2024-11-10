@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import axios from 'axios';
-
+import { baseURL } from '../utils';
 interface AdminAuthContextType {
   isAuthenticated: boolean;
   token: string | null;
@@ -71,7 +71,7 @@ export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({ children }
   const fetchDashboardData = async (authToken: string) => {
     try {
       console.log('Fetching dashboard data with token:', authToken ? 'exists' : 'null');
-      const response = await axios.get('http://localhost:3001/admin/dashboard', {
+      const response = await axios.get(`${baseURL}/admin/dashboard`, {
         headers: {
           Authorization: `Bearer ${authToken}`
         }
@@ -110,7 +110,7 @@ export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({ children }
     
     try {
       console.log('Attempting login for:', identifier);
-      const response = await axios.post('http://localhost:3001/admin/admin-login', {
+      const response = await axios.post(`${baseURL}/admin/admin-login`, {
         identifier,
         password
       });
@@ -132,7 +132,7 @@ export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({ children }
 
     try {
       console.log('Verifying OTP for:', email);
-      const response = await axios.post('http://localhost:3001/admin/verify-otp', {
+      const response = await axios.post(`${baseURL}/admin/verify-otp`, {
         email,
         otp
       });
@@ -178,7 +178,7 @@ export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({ children }
     clearMessage();
 
     try {
-      const response = await axios.post('http://localhost:3001/admin/request-upgrade', { uid });
+      const response = await axios.post(`${baseURL}/admin/request-upgrade`, { uid });
       setMessage(response.data.message);
     } catch (err: any) {
       console.error('Admin upgrade request error:', err);
@@ -195,7 +195,7 @@ export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({ children }
     clearMessage();
 
     try {
-      const response = await axios.post('http://localhost:3001/admin/upgrade-to-admin', {
+      const response = await axios.post(`${baseURL}/admin/upgrade-to-admin`, {
         uid,
         otp,
         password

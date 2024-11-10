@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-
+import { baseURL } from './utils';
 const VerifyEmail = () => {
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(true);
@@ -16,7 +16,7 @@ const VerifyEmail = () => {
         // Make the API call to verify the email
         const verifyEmail = async () => {
             try {
-                const response = await fetch(`http://localhost:3001/api/verify-email?token=${token}&email=${email}`);
+                const response = await fetch(`${baseURL}/api/verify-email?token=${token}&email=${email}`);
                 const data = await response.json();
 
                 if (response.ok) {

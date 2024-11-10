@@ -3,8 +3,7 @@ import { BallManager } from "../game/classes/BallManager";
 import axios from "axios";
 import { Button } from "../components/ui";
 import { GoogleLoginComponent } from "../auth/google/googlelogin";
-
-const backendURL = "http://localhost:3001"; // Base path for the demo API
+import { baseURL } from "../utils";
 
 export function Demo() {
   const [ballManager, setBallManager] = useState<BallManager>();
@@ -21,7 +20,7 @@ export function Demo() {
 
   const addBallHandler = async () => {
     try {
-      const response = await axios.post(`${backendURL}/demo-game`, {
+      const response = await axios.post(`${baseURL}/demo-game`, {
         userId: "sampleUserId",
         ballPrice,
       });

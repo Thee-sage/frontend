@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { googleLogout } from "@react-oauth/google";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import { baseURL } from "../utils";
 interface UserProfile {
   firstName: string;
   lastName: string;
@@ -45,7 +45,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Retrieve the JWT token from localStorage
       const token = localStorage.getItem("token");
       
-      const res = await axios.get(`http://localhost:3001/account/user/${uid}`, { 
+      const res = await axios.get(`${baseURL}/account/user/${uid}`, { 
         headers: {
           Authorization: `Bearer ${token}`,  // Include the token in the request header
         },
@@ -75,7 +75,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       console.log("Attempting Google login with credential:", credential);
       const res = await axios.post(
-        "http://localhost:3000/auth/google",
+        `${baseURL}/auth/google`,
         { token: credential },
         { withCredentials: true }
       );
@@ -97,7 +97,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loginWithEmailAndPassword = async (email: string, password: string) => {
     try {
       console.log("Attempting email login with email:", email);
-      const res = await axios.post('http://localhost:3001/api/login', { email, password });
+      const res = await axios.post(`${baseURL}/api/login`, { email, password });
       console.log("Email login success, profile data:", res.data);
       
       // Store the JWT token in localStorage
@@ -125,7 +125,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       if (!user) throw new Error('No user logged in');
       console.log("Initiating account deletion for UID:", user);
-      const res = await axios.post('http://localhost:3001/account/delete-account-initiate', {
+      const res = await axios.post(`${baseURL}/account/delete-account-initiate`, {
         uid: user,
         password
       }, { withCredentials: true, headers: { 'Content-Type': 'application/json' } });
@@ -142,7 +142,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       if (!user) throw new Error('No user logged in');
       console.log("Confirming account deletion for UID:", user, "with token:", token);
-      const res = await axios.post('http://localhost:3001/account/verify-delete', {
+      const res = await axios.post(`${baseURL}/account/verify-delete`, {
         uid: user,
         otp: token.trim()
       }, { withCredentials: true, headers: { 'Content-Type': 'application/json' } });
@@ -187,7 +187,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       console.log("Initiating password reset for UID:", user);
       const res = await axios.post(
-        'http://localhost:3001/account/password-reset-request',
+        `${baseURL}/account/password-reset-request`,
         {
           uid: user,
           email: profile.email,
@@ -216,7 +216,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       console.log("Confirming password reset for UID:", user, "with token:", token);
       const res = await axios.post(
-        'http://localhost:3001/account/password-reset-confirm',
+        `${baseURL}/account/password-reset-confirm`,
         {
           uid: user,
           email: profile.email,
