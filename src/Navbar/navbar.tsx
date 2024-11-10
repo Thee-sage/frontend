@@ -14,7 +14,7 @@ const socket = io(baseURL);
 
 const Navbar: React.FC = () => {
   const { remainingZixos } = useWallet();
-  const { user, profile, logout } = useAuth(); // Destructure user, profile, and logout from useAuth
+  const { user, logout } = useAuth(); // Destructure user, profile, and logout from useAuth
   const [walletBalance, setWalletBalance] = useState<number | null>(null);
   const [requestAmount, setRequestAmount] = useState<number>(0);
   const [requestMessage, setRequestMessage] = useState<string>("");

@@ -63,12 +63,13 @@ const AdminManagement: React.FC = () => {
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await login(identifier, loginPassword);
+      // Remove the response variable since it's not used
+      await login(identifier, loginPassword);
       setIsOtpVerificationRequired(true);
     } catch (err) {
       // Error is handled by context
     }
-  };
+};
 
   const handleOtpVerification = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

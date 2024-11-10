@@ -11,10 +11,10 @@ export function Game() {
   const [ads, setAds] = useState<any[]>([]); // State to store ads
   
   const [requestAmount, setRequestAmount] = useState<number>(0); // State for wallet request amount
-  const [requestMessage, setRequestMessage] = useState<string>(""); // State for request message
+  const [requestMessage, _setRequestMessage] = useState<string>(""); // State for request message
   const canvasRef = useRef<any>();
 
-  const { balance, setBalance, setRemainingZixos } = useWallet();
+  const {  setBalance, setRemainingZixos } = useWallet();
 
   useEffect(() => {
     if (canvasRef.current) {

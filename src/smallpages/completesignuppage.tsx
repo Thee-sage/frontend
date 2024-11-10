@@ -19,7 +19,6 @@ const LoginPage = () => {
     const [signupError, setSignupError] = useState('');
     const [signupSuccess, setSignupSuccess] = useState('');
     const navigate = useNavigate();
-    const { user } = useAuth();
     const { loginWithEmailAndPassword } = useAuth();
 
 

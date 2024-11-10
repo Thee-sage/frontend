@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from './contexts/authcontext';
 
 const AccountManagement: React.FC = () => {
-    const {  user,profile, initiateDeleteAccount, confirmDeleteAccount, initiatePasswordReset, confirmPasswordReset } = useAuth();
+    const {profile, initiateDeleteAccount, confirmDeleteAccount, initiatePasswordReset, confirmPasswordReset } = useAuth();
     const [password, setPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [currentPassword, setCurrentPassword] = useState('');
