@@ -7,76 +7,116 @@ import logo from "../assets/logo.svg";
 import { baseURL } from "../utils";
 import AccountManagement from "../abc";
 import { useWallet } from "../contexts/Walletcontext";
-import { useAuth } from "../contexts/authcontext"; // Import useAuth hook
+import { useAuth } from "../contexts/authcontext";
 import styles from "./page.module.css";
 
-const socket = io(baseURL);
+// Configure Socket.IO with proper options
+const socket = io(baseURL, {
+    withCredentials: true,
+    transports: ['websocket', 'polling'],
+    reconnectionAttempts: 5,
+    reconnectionDelay: 1000,
+    timeout: 20000,
+    autoConnect: false // Prevent automatic connection
+});
 
 const Navbar: React.FC = () => {
-  const { remainingZixos } = useWallet();
-  const { user, logout } = useAuth(); // Destructure user, profile, and logout from useAuth
-  const [walletBalance, setWalletBalance] = useState<number | null>(null);
-  const [requestAmount, setRequestAmount] = useState<number>(0);
-  const [requestMessage, setRequestMessage] = useState<string>("");
-  const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [isRequestOpen, setIsRequestOpen] = useState<boolean>(false);
-  const [isInitialFetchDone, setIsInitialFetchDone] = useState<boolean>(false);
+    const { remainingZixos } = useWallet();
+    const { user, logout } = useAuth();
+    const [walletBalance, setWalletBalance] = useState<number | null>(null);
+    const [requestAmount, setRequestAmount] = useState<number>(0);
+    const [requestMessage, setRequestMessage] = useState<string>("");
+    const [isExpanded, setIsExpanded] = useState<boolean>(false);
+    const [isRequestOpen, setIsRequestOpen] = useState<boolean>(false);
+    const [isInitialFetchDone, setIsInitialFetchDone] = useState<boolean>(false);
 
-  const fetchWalletBalance = async () => {
-    if (!user) return;
+    // Handle socket connection
+    useEffect(() => {
+        // Connect socket when component mounts
+        if (!socket.connected) {
+            socket.connect();
+        }
 
-    try {
-      const response = await axios.get(`${baseURL}/user-wallet`, {
-        params: { uid: user, t: new Date().getTime() },
-      });
-      setWalletBalance(response.data.balance);
-      setIsInitialFetchDone(true);
-    } catch (error) {
-      console.error("Error fetching wallet balance:", error);
-    }
-  };
+        // Socket error handling
+        socket.on("connect_error", (error) => {
+            console.error("Socket connection error:", error);
+        });
 
-  useEffect(() => {
-    if (!isInitialFetchDone && user) {
-      fetchWalletBalance();
-    }
-  }, [isInitialFetchDone, user]);
+        socket.on("error", (error) => {
+            console.error("Socket error:", error);
+        });
 
-  useEffect(() => {
-    if (isInitialFetchDone && remainingZixos !== null && walletBalance !== remainingZixos) {
-      setWalletBalance(remainingZixos);
-    }
-  }, [isInitialFetchDone, remainingZixos]);
+        // Cleanup on component unmount
+        return () => {
+            socket.off("connect_error");
+            socket.off("error");
+            socket.off("walletRequestApproved");
+            if (socket.connected) {
+                socket.disconnect();
+            }
+        };
+    }, []);
 
-  useEffect(() => {
-    socket.on("walletRequestApproved", (data) => {
-      if (data.uid === user) {
-        fetchWalletBalance();
-        setRequestMessage("Your request was approved!");
-      }
-    });
+    const fetchWalletBalance = async () => {
+        if (!user) return;
 
-    return () => {
-      socket.off("walletRequestApproved");
+        try {
+            const response = await axios.get(`${baseURL}/user-wallet`, {
+                params: { uid: user, t: new Date().getTime() },
+                withCredentials: true // Add this for CORS
+            });
+            setWalletBalance(response.data.balance);
+            setIsInitialFetchDone(true);
+        } catch (error) {
+            console.error("Error fetching wallet balance:", error);
+        }
     };
-  }, [user]);
 
-  const handleRequestMoney = async () => {
-    try {
-      if (!user) return;
+    useEffect(() => {
+        if (!isInitialFetchDone && user) {
+            fetchWalletBalance();
+        }
+    }, [isInitialFetchDone, user]);
 
-      const response = await axios.post(`${baseURL}/wallet/request`, {
-        uid: user,
-        requestedAmount: requestAmount,
-      });
+    useEffect(() => {
+        if (isInitialFetchDone && remainingZixos !== null && walletBalance !== remainingZixos) {
+            setWalletBalance(remainingZixos);
+        }
+    }, [isInitialFetchDone, remainingZixos]);
 
-      setRequestMessage(response.data.message);
-      setTimeout(() => fetchWalletBalance(), 1000);
-    } catch (error) {
-      const axiosError = error as any;
-      setRequestMessage(axiosError.response?.data?.error || "An error occurred");
-    }
-  };
+    useEffect(() => {
+        const handleWalletRequestApproved = (data: { uid: string }) => {
+            if (data.uid === user) {
+                fetchWalletBalance();
+                setRequestMessage("Your request was approved!");
+            }
+        };
+
+        socket.on("walletRequestApproved", handleWalletRequestApproved);
+
+        return () => {
+            socket.off("walletRequestApproved", handleWalletRequestApproved);
+        };
+    }, [user]);
+
+    const handleRequestMoney = async () => {
+        try {
+            if (!user) return;
+
+            const response = await axios.post(`${baseURL}/wallet/request`, {
+                uid: user,
+                requestedAmount: requestAmount,
+            }, {
+                withCredentials: true // Add this for CORS
+            });
+
+            setRequestMessage(response.data.message);
+            setTimeout(() => fetchWalletBalance(), 1000);
+        } catch (error) {
+            const axiosError = error as any;
+            setRequestMessage(axiosError.response?.data?.error || "An error occurred");
+        }
+    };
 
   const toggleMenu = () => setIsExpanded((prev) => !prev);
 
