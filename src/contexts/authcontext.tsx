@@ -75,7 +75,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       console.log("Attempting Google login with credential:", credential);
       const res = await axios.post(
-        `${baseURL}/auth/google`,
+        `${baseURL}/api/auth/google/callback`,
         { token: credential },
         { withCredentials: true }
       );
@@ -97,7 +97,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loginWithEmailAndPassword = async (email: string, password: string) => {
     try {
       console.log("Attempting email login with email:", email);
-      const res = await axios.post(`${baseURL}/api/login`, { email, password });
+      const res = await axios.post(`${baseURL}/api/auth/login,`, { email, password });
       console.log("Email login success, profile data:", res.data);
       
       // Store the JWT token in localStorage

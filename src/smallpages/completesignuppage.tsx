@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { GoogleLoginComponent } from '../auth/google/googlelogin';
-import { useAuth } from "..//contexts/authcontext"; // Adjust path if necessary
+import { useAuth } from "../contexts/authcontext"; // Adjust path if necessary
 import ForgotPassword from '../forgotpassword';
 import { baseURL } from '../utils';
 
@@ -46,7 +46,7 @@ const LoginPage = () => {
     const handleSSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await fetch(`${baseURL}/api/signup`, {
+            const response = await fetch(`${baseURL}/api/auth/signup`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
