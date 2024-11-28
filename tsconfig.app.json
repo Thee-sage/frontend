@@ -20,5 +20,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "../classes", "google/googlelogin.tsx"]
+  "include": ["src", "../classes", "google/googlelogin.tsx", "src/compo/lib/utils.ts"]
 }

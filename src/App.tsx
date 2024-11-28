@@ -1,17 +1,19 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import { Game } from "./pages/Game";
-import { GoogleLoginComponent } from "./auth/google/googlelogin";
+import { GamePage } from "./pages/Gamepage";
 import VerifyEmail from './VerifyEmail';
 import AdminPanel from './admin/admin';
-import { Demo } from "./pages/Demo";
+import PlinkoLandingPage from "./pages/mainpage";
 import Loginpage from "./smallpages/completesignuppage";
 import Layout from './Navbar/layout';
-import AdminUpgradeForm from "./adminupgrade";
+import AdminUpgradeForm from "./adminupgrade/adminupgrade";
 import { WalletProvider } from "./contexts/Walletcontext";
 import { AuthProvider } from "./contexts/authcontext";
 import Abc from "./abc";
+import AuthContainer from "./smallpages/completesignuppage";
 import { AdminAuthProvider } from "./contexts/admincontext";
+import { ThemeProvider } from './contexts/ThemeContext';
+import { PublicCasinoList,PublicCasinoDetail } from "./pages/allcasinopage";
 
 function App() {
   const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -22,6 +24,7 @@ function App() {
 
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <ThemeProvider>
       <BrowserRouter>
         <AuthProvider>
           <WalletProvider>
@@ -30,22 +33,25 @@ function App() {
               <Routes>
                 {/* Layout routes */}
                 <Route element={<Layout />}>
-                  <Route path="/" element={<Demo />} />
-                  <Route path="/game" element={<Game />} />
+                  <Route path="/" element={<PlinkoLandingPage />} />
+                  <Route path="/game" element={<GamePage />} />
                   <Route path="/verify-email" element={<VerifyEmail />} />
                   <Route path="/complete" element={<Loginpage />} />
-                  <Route path="/auth/google" element={<GoogleLoginComponent />} />
                   <Route path="/abc/*" element={<Abc />} />
+                  <Route path="/casinos" element={<PublicCasinoList />} />
+<Route path="/casinos/:id" element={<PublicCasinoDetail />} />
+                  <Route path="/auth/*" element={<AuthContainer />} />
                 </Route>
 
                 {/* Admin routes */}
                 <Route path="/admin/*" element={<AdminPanel />} />
-                <Route path="/adminupgrade" element={<AdminUpgradeForm />} />
+                <Route path="/adminlogin" element={<AdminUpgradeForm />} />
               </Routes>
             </AdminAuthProvider>
           </WalletProvider>
         </AuthProvider>
       </BrowserRouter>
+      </ThemeProvider>
     </GoogleOAuthProvider>
   );
 }

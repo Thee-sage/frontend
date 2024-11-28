@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { baseURL } from '../utils';
+
 interface AdminAuthContextType {
   isAuthenticated: boolean;
   token: string | null;
@@ -8,6 +9,7 @@ interface AdminAuthContextType {
   loading: boolean;
   error: string | null;
   message: string | null;
+  currentEmail: string | null;
   login: (identifier: string, password: string) => Promise<void>;
   verifyOtp: (email: string, otp: string) => Promise<void>;
   logout: () => void;
@@ -15,6 +17,7 @@ interface AdminAuthContextType {
   submitAdminUpgrade: (uid: string, otp: string, password: string) => Promise<void>;
   clearError: () => void;
   clearMessage: () => void;
+  refreshToken: () => Promise<string | null>;
 }
 
 interface AdminData {
@@ -38,35 +41,58 @@ interface AdminAuthProviderProps {
 }
 
 export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    const storedToken = localStorage.getItem('adminToken');
-    return !!storedToken;
-  });
-  const [token, setToken] = useState<string | null>(() => {
-    return localStorage.getItem('adminToken');
-  });
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [token, setToken] = useState<string | null>(null);
   const [adminData, setAdminData] = useState<AdminData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
-
-  useEffect(() => {
-    console.log('Auth State Changed:', {
-      isAuthenticated,
-      token: token ? 'exists' : 'null',
-      adminData,
-      loading
-    });
-  }, [isAuthenticated, token, adminData, loading]);
-
-  useEffect(() => {
-    if (token) {
-      fetchDashboardData(token).catch(console.error);
-    }
-  }, [token]);
+  const [currentEmail, setCurrentEmail] = useState<string | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const clearError = () => setError(null);
   const clearMessage = () => setMessage(null);
+
+  // Refreshing token
+  const refreshToken = useCallback(async (): Promise<string | null> => {
+    if (isRefreshing) return null;
+    
+    try {
+      setIsRefreshing(true);
+      console.log('Attempting to refresh token');
+      
+      const currentToken = localStorage.getItem('adminToken');
+      if (!currentToken) {
+        throw new Error('No token available for refresh');
+      }
+
+      const response = await axios.post(
+        `${baseURL}/admin/refresh-token`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${currentToken}`
+          }
+        }
+      );
+
+      if (response.data.token) {
+        console.log('Token refresh successful');
+        const newToken = response.data.token;
+        localStorage.setItem('adminToken', newToken);
+        setToken(newToken);
+        setIsAuthenticated(true);
+        return newToken;
+      }
+      return null;
+    } catch (err) {
+      console.error('Token refresh failed:', err);
+      logout();
+      throw new Error('Token refresh failed');
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [isRefreshing]);
 
   const fetchDashboardData = async (authToken: string) => {
     try {
@@ -76,13 +102,10 @@ export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({ children }
           Authorization: `Bearer ${authToken}`
         }
       });
-      console.log('Dashboard data received:', response.data);
       
-      // Update adminData with the response data
       if (response.data.adminData) {
         setAdminData(response.data.adminData);
       } else {
-        // If adminData is not in the dashboard response, try to decode it from the token
         try {
           const tokenData = JSON.parse(atob(authToken.split('.')[1]));
           setAdminData({
@@ -96,12 +119,52 @@ export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({ children }
       }
     } catch (err: any) {
       console.error('Dashboard fetch error:', err);
-      setError(err.response?.data?.message || 'Failed to fetch dashboard data');
       if (err.response?.status === 401) {
+        try {
+          const newToken = await refreshToken();
+          if (newToken) {
+            await fetchDashboardData(newToken);
+            return;
+          }
+        } catch (refreshErr) {
+          console.error('Refresh token failed during dashboard fetch:', refreshErr);
+        }
         logout();
       }
+      setError(err.response?.data?.message || 'Failed to fetch dashboard data');
     }
   };
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      localStorage.removeItem('adminToken');
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    // Try to restore session from localStorage
+    const storedToken = localStorage.getItem('adminToken');
+    if (storedToken) {
+      setToken(storedToken);
+      setIsAuthenticated(true);
+      fetchDashboardData(storedToken).catch(console.error);
+    }
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      handleBeforeUnload();
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log('Auth State Changed:', {
+      isAuthenticated,
+      token: token ? 'exists' : 'null',
+      adminData,
+      loading,
+      currentEmail
+    });
+  }, [isAuthenticated, token, adminData, loading, currentEmail]);
 
   const login = async (identifier: string, password: string) => {
     setLoading(true);
@@ -114,6 +177,17 @@ export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({ children }
         identifier,
         password
       });
+      
+      if (response.data.email) {
+        console.log('Setting current email:', response.data.email);
+        setCurrentEmail(response.data.email);
+      } else {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (emailRegex.test(identifier)) {
+          console.log('Setting current email from identifier:', identifier);
+          setCurrentEmail(identifier);
+        }
+      }
       
       setMessage(response.data.message || 'Please check your email for OTP');
     } catch (err: any) {
@@ -131,9 +205,15 @@ export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({ children }
     clearMessage();
 
     try {
-      console.log('Verifying OTP for:', email);
+      const emailToUse = email || currentEmail;
+      
+      if (!emailToUse) {
+        throw new Error('No email available for OTP verification');
+      }
+
+      console.log('Verifying OTP for:', emailToUse);
       const response = await axios.post(`${baseURL}/admin/verify-otp`, {
-        email,
+        email: emailToUse,
         otp
       });
 
@@ -144,11 +224,10 @@ export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({ children }
         setIsAuthenticated(true);
         setMessage('Login successful');
         
-        // Set admin data immediately from the OTP verification response
         setAdminData({
           email: response.data.email,
           uid: response.data.uid,
-          role: 'admin' // You can get this from response if available
+          role: 'admin'
         });
         
         await fetchDashboardData(response.data.token);
@@ -159,6 +238,7 @@ export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({ children }
       throw err;
     } finally {
       setLoading(false);
+      setCurrentEmail(null);
     }
   };
 
@@ -168,6 +248,7 @@ export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({ children }
     setToken(null);
     setIsAuthenticated(false);
     setAdminData(null);
+    setCurrentEmail(null);
     clearError();
     clearMessage();
   };
@@ -217,6 +298,29 @@ export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({ children }
     }
   };
 
+  // Create axios instance with interceptors
+  useEffect(() => {
+    const axiosInstance = axios.create();
+    
+    axiosInstance.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        if (error.response?.status === 401 && token) {
+          try {
+            const newToken = await refreshToken();
+            if (newToken && error.config) {
+              error.config.headers.Authorization = `Bearer ${newToken}`;
+              return axios(error.config);
+            }
+          } catch (refreshError) {
+            console.error('Token refresh failed in interceptor:', refreshError);
+          }
+        }
+        return Promise.reject(error);
+      }
+    );
+  }, [token, refreshToken]);
+
   const value = {
     isAuthenticated,
     token,
@@ -224,13 +328,15 @@ export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({ children }
     loading,
     error,
     message,
+    currentEmail,
     login,
     verifyOtp,
     logout,
     requestAdminUpgrade,
     submitAdminUpgrade,
     clearError,
-    clearMessage
+    clearMessage,
+    refreshToken
   };
 
   return (
@@ -239,3 +345,5 @@ export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({ children }
     </AdminAuthContext.Provider>
   );
 };
+
+export default AdminAuthProvider;

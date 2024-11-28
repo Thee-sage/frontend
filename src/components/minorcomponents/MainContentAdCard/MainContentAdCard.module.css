@@ -1,0 +1,160 @@
+.adCard {
+  background: #fefeff;
+  display: flex;
+  flex: 1;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  width: 1600px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-direction: row;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.adCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.photo {
+  flex: 0.2;
+  width: 180px;
+}
+
+.logo {
+  width: 200px;
+  height: 180px;
+  background: #8794ad;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.2s ease-in-out;
+}
+
+.logo:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+
+.logo img {
+  width: 90%;
+  height: 80%;
+  border-radius: 8px;
+  object-fit: contain;
+  transition: transform 0.2s ease-in-out;
+}
+
+.logo img:hover {
+  transform: scale(1.02);
+}
+
+.nameandbonus {
+  flex: 2;
+  color: #0f1729;
+  flex-direction: column;
+  max-width: 400px;
+}
+
+.content {
+  flex: 0.8;
+}
+
+.bonus {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #4a5568;
+  margin: 8px 0;
+  font-weight: 700;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 700;
+  color: black;
+}
+
+.tcLink {
+  color: #6b7280;
+  font-size: 12px;
+  margin-left: 8px;
+}
+
+.readMore {
+  color: #3b82f6;
+  font-size: 13px;
+  background: none;
+  border: none;
+  padding: 0;
+  margin-left: 4px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.readMore:hover {
+  color: #2563eb;
+}
+
+.buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.quickInfo {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  background: #f3f4f6;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.quickInfo:hover {
+  background: #e5e7eb;
+}
+
+.visitCasino {
+  padding: 8px 24px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.visitCasino:hover {
+  background: #1d4ed8;
+}
+.adsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  padding: 24px;
+  justify-items: center;
+}
+
+.sidebarAds {
+  position: fixed;
+  right: 24px;
+  top: 25%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  z-index: 10;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.footerAds {
+  margin-top: 40px;
+  padding-bottom: 40px;
+}

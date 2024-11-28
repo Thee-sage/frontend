@@ -1,0 +1,228 @@
+.pageContainer {
+    min-height: 100vh;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom right, #0d0d15, #1a1a2e);
+    overflow-y: auto;
+}
+
+.backgroundOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0.5;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.contentContainer {
+    width: 100%;
+    padding: 2rem;
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.formContainer {
+    width: 100%;
+    max-width: 28rem;
+    background: #0d0d15;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(4px);
+}
+.gg{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+ justify-content: center;
+}
+.authContainer {
+    background: rgba(17, 17, 28, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    backdrop-filter: blur(4px);
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .googleButtonWrapper {
+    position: relative;
+    width: 100%;
+    cursor: pointer;
+  }
+  
+  .googleButtonWrapper:hover {
+    transform: translateY(-1px);
+  }
+  
+  .googleButton {
+    padding: 0 1rem;
+  }
+  
+  .googleButton:hover {
+    border-color: rgba(168, 85, 247, 0.4);
+  }
+  .formContainer {
+    width: 100%;
+    max-width: 28rem;
+    margin: 0 auto;
+    background: #0d0d15;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .input {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    height: 48px;
+    width: 100%;
+    border-radius: 0.5rem;
+    padding: 0 1rem;
+    transition: all 0.2s ease;
+  }
+  
+  .input:focus {
+    border-color: rgba(168, 85, 247, 0.4);
+    box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.2);
+    outline: none;
+  }
+  
+  .input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .divider {
+    position: relative;
+    margin: 1.5rem 0;
+    text-align: center;
+  }
+  
+  .divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(168, 85, 247, 0.2) 50%,
+      transparent 100%
+    );
+  }
+  
+  .divider span {
+    position: relative;
+    z-index: 1;
+    background: #0d0d15;
+    padding: 0 1rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.875rem;
+  }
+  
+  .googleButton {
+    width: 100%;
+    height: 48px;
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(168, 85, 247, 0.2);
+    color: white;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  
+  .googleButton:hover {
+    border-color: rgba(168, 85, 247, 0.4);
+    transform: translateY(-1px);
+  }
+  
+  .submitButton {
+    width: 100%;
+    height: 48px;
+    border-radius: 0.5rem;
+    background: linear-gradient(45deg, #6366f1, #8b5cf6);
+    color: white;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .submitButton:hover {
+    background: linear-gradient(45deg, #5258e8, #7c4ef3);
+  }
+  
+  .submitButton::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    transition: 0.5s;
+  }
+  
+  .submitButton:hover::before {
+    left: 100%;
+  }
+  
+  .logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+  
+  .formContainer, 
+  .input, 
+  .submitButton {
+    transition: all 0.2s ease;
+  }
+  
+@media screen and (max-width: 640px) {
+    .contentContainer {
+        padding: 1rem;
+        align-items: flex-start; /* Better mobile experience */
+        padding-top: 2rem;
+    }
+
+    .formContainer {
+        padding: 1.5rem;
+    }
+
+    .pageContainer {
+        height: auto;
+        min-height: 100vh;
+        position: absolute; /* Change to absolute for better mobile scrolling */
+    }
+}

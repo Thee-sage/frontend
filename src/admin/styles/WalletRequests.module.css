@@ -1,0 +1,160 @@
+.title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #ffffff;
+    padding: 1.5rem 2rem;
+    margin: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: #1a1a1a;
+  }
+  
+  .container {
+    padding: 1.5rem;
+    background-color: #1a1a1a;
+    min-height: 100vh;
+    color: #e5e5e5;
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #242424;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    margin-top: 1rem;
+  }
+  
+  .tableHeader {
+    background-color: #2d2d2d;
+    color: #ffffff;
+    text-align: left;
+    padding: 1rem;
+    font-weight: 500;
+    border-bottom: 2px solid #333;
+  }
+  
+  .tableCell {
+    padding: 1rem;
+    border-bottom: 1px solid #333;
+    color: #e5e5e5;
+  }
+  
+  .approvedRow {
+    background-color: rgba(34, 197, 94, 0.1);
+  }
+  
+  .rejectedRow {
+    background-color: rgba(239, 68, 68, 0.1);
+  }
+  
+  .pendingRow {
+    background-color: #242424;
+  }
+  
+  .amountCell {
+    font-family: monospace;
+    color: #10b981;
+  }
+  
+  .statusCell {
+    text-transform: capitalize;
+  }
+  
+  .statusPending {
+    color: #f59e0b;
+  }
+  
+  .statusApproved {
+    color: #10b981;
+  }
+  
+  .statusRejected {
+    color: #ef4444;
+  }
+  
+  .dateCell {
+    color: #9ca3af;
+    font-size: 0.9rem;
+  }
+  
+  .signedByCell {
+    color: #9ca3af;
+    font-style: italic;
+  }
+  
+  .actionContainer {
+    display: flex;
+    gap: 0.75rem;
+  }
+  
+  .approveButton {
+    background-color: #059669;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .approveButton:hover {
+    background-color: #047857;
+  }
+  
+  .rejectButton {
+    background-color: #dc2626;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .rejectButton:hover {
+    background-color: #b91c1c;
+  }
+  
+  .message {
+    padding: 1rem;
+    border-radius: 0.375rem;
+    margin-bottom: 1rem;
+  }
+  
+  .error {
+    background-color: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+  }
+  
+  .success {
+    background-color: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+  }
+  
+  .loading {
+    color: #9ca3af;
+    text-align: center;
+    padding: 2rem;
+  }
+  
+  @media (max-width: 768px) {
+    .table {
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    
+    .tableCell, 
+    .tableHeader {
+      padding: 0.75rem;
+    }
+    
+    .actionContainer {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }

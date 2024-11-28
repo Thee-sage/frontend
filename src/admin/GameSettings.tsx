@@ -2,14 +2,72 @@ import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import axios from "axios";
 import { baseURL } from "../utils";
 import { useAdminAuth } from "../contexts/admincontext";
+import styles from "./styles/GameSettings.module.css";
+
+// Add descriptions for each setting
+const settingDescriptions = {
+  ballLimit: "Maximum number of balls a player can have in their inventory at once. This helps control game economy and prevents hoarding.",
+  initialBalance: "Starting balance for new players when they first join the game. This amount should be enough to get them started but not too much to affect the economy.",
+  maxBallPrice: "Maximum price that can be set for a single ball. This prevents inflation and keeps the game balanced.",
+  dropResetTime: "Time in milliseconds before the drop area resets. This controls how frequently players can drop balls.",
+  totalCycleTime: "Total time in milliseconds for one complete rotation of all ads. Higher priority ads will be shown for longer portions of this cycle."
+};
 
 interface GameSettingsData {
   ballLimit: number;
   initialBalance: number;
   maxBallPrice: number;
   dropResetTime: number;
+  totalCycleTime: number;
   lastSignedInBy: string;
 }
+
+const FormField = ({ 
+  name, 
+  label, 
+  value, 
+  onChange,
+  description 
+}: { 
+  name: keyof GameSettingsData;
+  label: string;
+  value: number;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  description: string;
+}) => (
+  <div className={styles.formGroup}>
+    <div className={styles.labelGroup}>
+      <label className={styles.label}>
+        {label}
+      </label>
+      <div className={styles.tooltipContainer}>
+        <button 
+          type="button" 
+          className={styles.tooltipButton}
+          aria-label={`Info about ${label}`}
+        >
+          ?
+          <span className={styles.tooltip}>
+            {description}
+          </span>
+        </button>
+      </div>
+    </div>
+    <input
+      type="number"
+      name={name}
+      value={value}
+      onChange={onChange}
+      className={styles.input}
+    />
+    {name === 'totalCycleTime' && (
+      <p className={styles.helpText}>
+        {(value / 1000 / 60).toFixed(1)} minutes - 
+        Time for one complete rotation of ads. Higher priority ads will stay longer.
+      </p>
+    )}
+  </div>
+);
 
 export const GameSettings = () => {
   const { token, adminData } = useAdminAuth();
@@ -18,6 +76,7 @@ export const GameSettings = () => {
     initialBalance: 200,
     maxBallPrice: 20,
     dropResetTime: 60000,
+    totalCycleTime: 600000,
     lastSignedInBy: ""
   });
   
@@ -105,102 +164,91 @@ export const GameSettings = () => {
 
   if (!token) {
     return (
-      <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+      <div className={`${styles.message} ${styles.error}`}>
         You must be logged in as an admin to access this page.
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow">
-      <h2 className="text-2xl font-bold mb-6">Game Settings</h2>
-      
-      {loading && (
-        <div className="text-center py-4">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-        </div>
-      )}
-      
-      {message && (
-        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-          {message}
-        </div>
-      )}
-      
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
-        </div>
-      )}
+    <>
+      <h2 className={styles.title}>Game Settings</h2>
+      <div className={styles.container}>
+        {loading && (
+          <div className={styles.loading}>
+            <div className={styles.spinner}></div>
+          </div>
+        )}
+        
+        {message && (
+          <div className={`${styles.message} ${styles.success}`}>
+            {message}
+          </div>
+        )}
+        
+        {error && (
+          <div className={`${styles.message} ${styles.error}`}>
+            {error}
+          </div>
+        )}
+  
+        <form onSubmit={handleSubmit} className={styles.form}>
+        <FormField
+          name="ballLimit"
+          label="Ball Limit"
+          value={settings.ballLimit}
+          onChange={handleInputChange}
+          description={settingDescriptions.ballLimit}
+        />
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Ball Limit
-          </label>
-          <input
-            type="number"
-            name="ballLimit"
-            value={settings.ballLimit}
-            onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
+        <FormField
+          name="initialBalance"
+          label="Initial Balance"
+          value={settings.initialBalance}
+          onChange={handleInputChange}
+          description={settingDescriptions.initialBalance}
+        />
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Initial Balance
-          </label>
-          <input
-            type="number"
-            name="initialBalance"
-            value={settings.initialBalance}
-            onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
+        <FormField
+          name="maxBallPrice"
+          label="Max Ball Price"
+          value={settings.maxBallPrice}
+          onChange={handleInputChange}
+          description={settingDescriptions.maxBallPrice}
+        />
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Max Ball Price
-          </label>
-          <input
-            type="number"
-            name="maxBallPrice"
-            value={settings.maxBallPrice}
-            onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
+        <FormField
+          name="dropResetTime"
+          label="Drop Reset Time (ms)"
+          value={settings.dropResetTime}
+          onChange={handleInputChange}
+          description={settingDescriptions.dropResetTime}
+        />
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Drop Reset Time (ms)
-          </label>
-          <input
-            type="number"
-            name="dropResetTime"
-            value={settings.dropResetTime}
-            onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
+        <FormField
+          name="totalCycleTime"
+          label="Total Cycle Time for Ads (ms)"
+          value={settings.totalCycleTime}
+          onChange={handleInputChange}
+          description={settingDescriptions.totalCycleTime}
+        />
 
         <button 
           type="submit" 
           disabled={loading}
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 disabled:bg-blue-300 disabled:cursor-not-allowed"
+          className={styles.button}
         >
           {loading ? 'Updating...' : 'Update Settings'}
         </button>
-      </form>
-
-      {settings.lastSignedInBy && (
-        <p className="text-sm text-gray-500 mt-4">
-          Last updated by: {settings.lastSignedInBy}
-        </p>
-      )}
-    </div>
+        </form>
+  
+        {settings.lastSignedInBy && (
+          <div className={styles.lastUpdated}>
+            Last updated by: {settings.lastSignedInBy}
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { baseURL } from "../utils";
-import { Button } from "../components/ui";
+import styles from "./styles/WalletRequests.module.css"
 import { useAdminAuth } from '../contexts/admincontext';
 
 // Define interface for admin data
@@ -101,64 +101,107 @@ export function WalletRequests() {
   };
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">Wallet Requests</h2>
-
-      {loading && <p>Loading wallet requests...</p>}
-      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-      {successMessage && <p className="text-green-500">{successMessage}</p>}
-
-      {!loading && requests.length === 0 && <p>No wallet requests found.</p>}
-
-      {!loading && requests.length > 0 && (
-        <table className="min-w-full bg-white border border-gray-300">
-          <thead>
-            <tr>
-              <th className="py-2 px-4 border-b">Email</th>
-              <th className="py-2 px-4 border-b">Requested Amount</th>
-              <th className="py-2 px-4 border-b">Status</th>
-              <th className="py-2 px-4 border-b">Signed By</th>
-              <th className="py-2 px-4 border-b">Date</th>
-              <th className="py-2 px-4 border-b">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {requests.map((request) => (
-              <tr key={request._id} className={
-                request.status === 'approved' ? 'bg-green-50' :
-                request.status === 'rejected' ? 'bg-red-50' :
-                ''
-              }>
-                <td className="py-2 px-4 border-b">{request.email}</td>
-                <td className="py-2 px-4 border-b">{request.requestedAmount}</td>
-                <td className="py-2 px-4 border-b capitalize">{request.status}</td>
-                <td className="py-2 px-4 border-b">{request.signedBy || '-'}</td>
-                <td className="py-2 px-4 border-b">
-                  {new Date(request.createdAt).toLocaleDateString()}
-                </td>
-                <td className="py-2 px-4 border-b">
-                  {request.status === "pending" && (
-                    <div className="flex gap-2">
-                      <Button 
-                        onClick={() => handleApprove(request._id)}
-                        className="bg-green-500 hover:bg-green-600 text-white"
-                      >
-                        Approve
-                      </Button>
-                      <Button 
-                        onClick={() => handleReject(request._id)}
-                        className="bg-red-500 hover:bg-red-600 text-white"
-                      >
-                        Reject
-                      </Button>
-                    </div>
-                  )}
-                </td>
+    <>
+    <h2 className={styles.title}>Wallet Requests</h2>
+      <div className={styles.container}>
+   
+    
+        {/* Loading state */}
+        {loading && (
+          <div className={styles.loading}>
+            Loading wallet requests...
+          </div>
+        )}
+    
+        {/* Error message */}
+        {errorMessage && (
+          <div className={`${styles.message} ${styles.error}`}>
+            {errorMessage}
+          </div>
+        )}
+    
+        {/* Success message */}
+        {successMessage && (
+          <div className={`${styles.message} ${styles.success}`}>
+            {successMessage}
+          </div>
+        )}
+    
+        {/* Show "No requests" message when not loading and no requests */}
+        {!loading && requests.length === 0 && (
+          <div className={styles.message}>
+            No wallet requests found.
+          </div>
+        )}
+    
+        {/* Table only shows when we have requests and not loading */}
+        {!loading && requests.length > 0 && (
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th className={styles.tableHeader}>Email</th>
+                <th className={styles.tableHeader}>Amount</th>
+                <th className={styles.tableHeader}>Status</th>
+                <th className={styles.tableHeader}>Signed By</th>
+                <th className={styles.tableHeader}>Date</th>
+                <th className={styles.tableHeader}>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </div>
-  );
+            </thead>
+            <tbody>
+              {requests.map((request) => (
+                <tr
+                  key={request._id}
+                  className={
+                    request.status === 'approved'
+                      ? styles.approvedRow
+                      : request.status === 'rejected'
+                      ? styles.rejectedRow
+                      : styles.pendingRow
+                  }
+                >
+                  <td className={styles.tableCell}>{request.email}</td>
+                  <td className={`${styles.tableCell} ${styles.amountCell}`}>
+                    {request.requestedAmount.toLocaleString()}
+                  </td>
+                  <td className={`${styles.tableCell} ${styles.statusCell} ${
+                    request.status === 'pending'
+                      ? styles.statusPending
+                      : request.status === 'approved'
+                      ? styles.statusApproved
+                      : styles.statusRejected
+                  }`}>
+                    {request.status}
+                  </td>
+                  <td className={`${styles.tableCell} ${styles.signedByCell}`}>
+                    {request.signedBy || '-'}
+                  </td>
+                  <td className={`${styles.tableCell} ${styles.dateCell}`}>
+                    {new Date(request.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className={styles.tableCell}>
+                    {request.status === "pending" && (
+                      <div className={styles.actionContainer}>
+                        <button 
+                          onClick={() => handleApprove(request._id)}
+                          className={styles.approveButton}
+                        >
+                          Approve
+                        </button>
+                        <button 
+                          onClick={() => handleReject(request._id)}
+                          className={styles.rejectButton}
+                        >
+                          Reject
+                        </button>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+      </>
+    );
 }

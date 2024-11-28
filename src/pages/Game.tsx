@@ -1,20 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import { BallManager } from "../game/classes/BallManager";
 import axios from "axios";
-import { Button } from "../components/ui";
 import { baseURL } from "../utils";
 import { useWallet } from "../contexts/Walletcontext"; 
+import styles from "./Game.module.css";
+import Zixoslogo from "../assets/zixos";
 export function Game() {
   const [ballManager, setBallManager] = useState<BallManager>();
-  const [ballPrice, setBallPrice] = useState<number>(1); // Default ball price
-  const [backendData, setBackendData] = useState<any>(null); // State to store backend values
-  const [ads, setAds] = useState<any[]>([]); // State to store ads
-  
-  const [requestAmount, setRequestAmount] = useState<number>(0); // State for wallet request amount
-  const [requestMessage, _setRequestMessage] = useState<string>(""); // State for request message
+  const [ballPrice, setBallPrice] = useState<number>(1);
+  const [backendData, setBackendData] = useState<any>(null);
+  const [errorMessage, setErrorMessage] = useState<string>(""); // Added missing error message state
   const canvasRef = useRef<any>();
 
-  const {  setBalance, setRemainingZixos } = useWallet();
+  const { setBalance, setRemainingZixos } = useWallet();
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -23,25 +21,13 @@ export function Game() {
       );
       setBallManager(ballManager);
     }
-
-    // Fetch ads from the backend
-    const fetchAds = async () => {
-      try {
-        const response = await axios.get(`${baseURL}/public`);
-        setAds(response.data); // Store ads in state
-      } catch (error) {
-        console.error("Error fetching ads:", error);
-      }
-    };
-
-    fetchAds();
   }, [canvasRef]);
 
   const handleAddBall = async () => {
     try {
       const userId = localStorage.getItem("uid");
       if (!userId) {
-        console.error("User ID is missing. Please log in.");
+        setErrorMessage("User ID is missing. Please log in.");
         return;
       }
 
@@ -55,138 +41,84 @@ export function Game() {
       }
 
       setBackendData(response.data);
-
-      // Update balance and remainingZixos in the context
       setBalance(prevBalance => prevBalance + response.data.winnings);
-      setRemainingZixos(response.data.remainingZixos); // Update remainingZixos in the WalletContext
+      setRemainingZixos(response.data.remainingZixos);
+      setErrorMessage(""); // Clear any previous error messages
     } catch (error) {
       console.error("Error adding ball:", error);
+      setErrorMessage("Error adding ball. Please try again.");
     }
   };
 
-
-
-
-  // Filter ads by location
-  const filterAdsByLocation = (location: string) => {
-    return ads.filter(ad => ad.location === location);
-  };
-
   return (
-    <div className="flex flex-col lg:flex-row items-center justify-center">
-      <canvas ref={canvasRef} width="800" height="800"></canvas>
+    <div >
+    <div className={styles.gameContainer}>
+        <div className={styles.innerContainer}>
+            <div className={styles.gameContent}>
+            <div className={styles.canvasContainer}>
+    <canvas
+        ref={canvasRef}
+        width={800}
+        height={800}
+        className={styles.canvas}
+    />
+</div>
 
-      {/* Input field for ball price */}
-      <div className="mb-4">
-        <label htmlFor="ballPrice" className="mr-2">Set Ball Price:</label>
-        <input
-          id="ballPrice"
-          type="number"
-          min="1"
-          value={ballPrice}
-          onChange={(e) => setBallPrice(Number(e.target.value))}
-          className="border px-2 py-1"
-        />
-      </div>
+                <div className={styles.controlsPanel}>
+                    <div className={styles.inputGroup}>
+                        <label htmlFor="ballPrice" className={styles.label}>
+                            Set Ball Price:
+                        </label>
+                        <input
+                            id="ballPrice"
+                            type="number"
+                            min="1"
+                            value={ballPrice}
+                            onChange={(e) => setBallPrice(Number(e.target.value))}
+                            className={styles.input}
+                        />
+                    </div>
 
-      {/* Button to add ball with the custom price */}
-      <Button className="px-10 mb-4" onClick={handleAddBall}>
-        Add balls
-      </Button>
-      
-      {/* Input field for wallet request amount */}
-      <div className="mb-4">
-        <label htmlFor="requestAmount" className="mr-2">Request Amount:</label>
-        <input
-          id="requestAmount"
-          type="number"
-          min="1"
-          value={requestAmount}
-          onChange={(e) => setRequestAmount(Number(e.target.value))}
-          className="border px-2 py-1"
-        />
-      </div>
+                    <button
+                        onClick={handleAddBall}
+                        className={styles.button}
+                    >
+                        Drop Ball
+                    </button>
 
+                    {backendData && (
+                        <div className={styles.resultsContainer}>
+                            <h3 className={styles.resultsTitle}>Game Results</h3>
+                            <div className={styles.resultItem}>
+                                <span>Ball Price:</span>
+                                <span className={styles.resultValue}>{backendData.ballPrice} <Zixoslogo/></span>
+                            </div>
+                            <div className={styles.resultItem}>
+                                <span>Winnings:</span>
+                                <span className={styles.resultValue}>{backendData.winnings} <Zixoslogo/></span>
+                            </div>
+                            <div className={styles.resultItem}>
+                                <span>Multiplier:</span>
+                                <span className={styles.resultValue}>{backendData.multiplier}x</span>
+                            </div>
+                            <div className={styles.resultItem}>
+    <span>Remaining:</span>
+    <span className={styles.resultValue}>
+        {Number(backendData.remainingZixos).toFixed(2)} <Zixoslogo/>
+    </span>
+</div>
+                        </div>
+                    )}
 
-
-      {/* Display backend response data */}
-      {backendData && (
-        <div className="mt-4">
-          <h3 className="font-bold">Game Results:</h3>
-          <p>Ball Price: {backendData.ballPrice}</p>
-          <p>Winnings: {backendData.winnings}</p>
-          <p>Multiplier: {backendData.multiplier}</p>
-          <p>Pattern: {backendData.pattern.join(", ")}</p>
-          <p>Remaining Zixos: {backendData.remainingZixos}</p>
-        </div>
-      )}
-
-      {/* Display Ads based on their locations */}
-      <div className="mt-8">
-        <h3 className="font-bold text-xl">Advertisements:</h3>
-
-        {/* Header Ad Section */}
-        <div className="mb-4">
-          <h4 className="font-bold">Header Ad</h4>
-          {filterAdsByLocation("Header").map((ad, index) => (
-            <div key={index} className="border p-4 mb-4">
-              <h4 className="font-bold">{ad.title}</h4>
-              <p>{ad.description}</p>
-              <a href={ad.link} target="_blank" rel="noopener noreferrer">
-                <img src={ad.imageUrl} alt={ad.title} className="w-full h-auto" />
-              </a>
+                    {errorMessage && (
+                        <div className={styles.errorMessage}>
+                            {errorMessage}
+                        </div>
+                    )}
+                </div>
             </div>
-          ))}
         </div>
-
-        {/* Sidebar Ad Section */}
-        <div className="mb-4">
-          <h4 className="font-bold">Sidebar Ad</h4>
-          {filterAdsByLocation("Sidebar").map((ad, index) => (
-            <div key={index} className="border p-4 mb-4">
-              <h4 className="font-bold">{ad.title}</h4>
-              <p>{ad.description}</p>
-              <a href={ad.link} target="_blank" rel="noopener noreferrer">
-                <img src={ad.imageUrl} alt={ad.title} className="w-full h-auto" />
-              </a>
-            </div>
-          ))}
-        </div>
-
-        {/* Main Content Ad Section */}
-        <div className="mb-4">
-          <h4 className="font-bold">Main Content Ad</h4>
-          {filterAdsByLocation("MainContent").map((ad, index) => (
-            <div key={index} className="border p-4 mb-4">
-              <h4 className="font-bold">{ad.title}</h4>
-              <p>{ad.description}</p>
-              <a href={ad.link} target="_blank" rel="noopener noreferrer">
-                <img src={ad.imageUrl} alt={ad.title} className="w-full h-auto" />
-              </a>
-            </div>
-          ))}
-        </div>
-
-        {/* Footer Ad Section */}
-        <div className="mb-4">
-          <h4 className="font-bold">Footer Ad</h4>
-          {filterAdsByLocation("Footer").map((ad, index) => (
-            <div key={index} className="border p-4 mb-4">
-              <h4 className="font-bold">{ad.title}</h4>
-              <p>{ad.description}</p>
-              <a href={ad.link} target="_blank" rel="noopener noreferrer">
-                <img src={ad.imageUrl} alt={ad.title} className="w-full h-auto" />
-              </a>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {requestMessage && (
-        <div className="mt-4">
-          <p>{requestMessage}</p>
-        </div>
-      )}
     </div>
+</div>
   );
 }

@@ -1,0 +1,373 @@
+:root {
+  /* Core colors */
+  --bg-primary: #13141b;
+  --bg-secondary: rgba(34, 36, 47, 0.5);
+  --bg-tertiary: #2a2d3d;
+  --bg-hover: rgba(41, 44, 58, 0.7);
+  
+  /* Text colors */
+  --text-primary: #f8f9ff;
+  --text-secondary: #b4b8d7;
+  --text-muted: #64748b;
+  --text-hover: #ffffff;
+  
+  /* Border colors */
+  --border-primary: rgba(99, 102, 241, 0.1);
+  --border-hover: rgba(99, 102, 241, 0.2);
+  
+  /* Status colors */
+  --status-active-bg: rgba(16, 185, 129, 0.1);
+  --status-active-text: #10b981;
+  --status-inactive-bg: rgba(239, 68, 68, 0.1);
+  --status-inactive-text: #ef4444;
+  
+  /* Button colors */
+  --button-deactivate-bg: rgba(234, 179, 8, 0.1);
+  --button-deactivate-text: #eab308;
+  --button-deactivate-hover: rgba(234, 179, 8, 0.2);
+  
+  --button-edit-bg: rgba(99, 102, 241, 0.1);
+  --button-edit-text: #818cf8;
+  --button-edit-hover: rgba(99, 102, 241, 0.2);
+  
+  --button-delete-bg: rgba(239, 68, 68, 0.1);
+  --button-delete-text: #ef4444;
+  --button-delete-hover: rgba(239, 68, 68, 0.2);
+  
+  /* Rating colors */
+  --rating-star: #eab308;
+  --rating-bg: rgba(234, 179, 8, 0.1);
+}
+
+/* Layout containers */
+.container {
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  padding: 1.5rem;
+}
+
+.header {
+  padding-bottom: 1.5rem;
+}
+
+.title {
+  color: var(--text-primary);
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+
+.grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+}
+
+/* Card styles */
+.card {
+  background-color: var(--bg-secondary);
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-primary);
+  padding: 1.25rem;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+}
+
+.card:hover {
+  border-color: var(--border-hover);
+  background-color: var(--bg-hover);
+}
+
+.cardContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Casino name section */
+.casinoName {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.casinoTitle {
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Status badge */
+.status {
+  background-color: var(--status-active-bg);
+  color: var(--status-active-text);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.statusInactive {
+  background-color: var(--status-inactive-bg);
+  color: var(--status-inactive-text);
+}
+
+/* Details section */
+.details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.detailLabel {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.detailValue {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  text-align: right;
+}
+
+/* Rating display */
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--rating-star);
+  background-color: var(--rating-bg);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.ratingIcon {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+/* Offer section */
+.offerLabel {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.offer {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  min-height: 3rem;
+  margin-bottom: 1rem;
+  word-break: break-word;
+}
+
+/* Action buttons */
+.actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-primary);
+}
+
+.button {
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.deactivateButton {
+  background-color: var(--button-deactivate-bg);
+  color: var(--button-deactivate-text);
+}
+
+.deactivateButton:hover:not(:disabled) {
+  background-color: var(--button-deactivate-hover);
+}
+
+.editButton {
+  background-color: var(--button-edit-bg);
+  color: var(--button-edit-text);
+}
+
+.editButton:hover:not(:disabled) {
+  background-color: var(--button-edit-hover);
+}
+
+.deleteButton {
+  background-color: var(--button-delete-bg);
+  color: var(--button-delete-text);
+}
+
+.deleteButton:hover:not(:disabled) {
+  background-color: var(--button-delete-hover);
+}
+
+/* Message styles */
+.error {
+  background-color: var(--button-delete-bg);
+  color: var(--button-delete-text);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.loading {
+  color: var(--text-muted);
+  text-align: center;
+  padding: 2rem;
+  font-size: 0.875rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .card {
+    padding: 1rem;
+  }
+  
+  .actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Utility classes */
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.breakWord {
+  word-break: break-word;
+}
+
+/* Focus states for accessibility */
+.button:focus-visible {
+  outline: 2px solid var(--button-edit-text);
+  outline-offset: 2px;
+}
+
+/* Empty state */
+.emptyState {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+}
+
+.emptyStateText {
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+/* Loading animation */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.loadingPulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Interactive states */
+.card:active {
+  transform: scale(0.995);
+}
+
+/* Custom scrollbar */
+.container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.container::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+.container::-webkit-scrollbar-thumb {
+  background-color: var(--bg-tertiary);
+  border-radius: 4px;
+}
+
+.container::-webkit-scrollbar-thumb:hover {
+  background-color: var(--border-hover);
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1.5rem;
+}
+
+.addButton {
+  background-color: var(--button-edit-bg);
+  color: var(--button-edit-text);
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.addButton:hover {
+  background-color: var(--button-edit-hover);
+}
