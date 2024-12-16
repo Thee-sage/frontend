@@ -29,7 +29,11 @@ export const AdContainer = ({ renderAds, children }: AdContainerProps) => {
           axios.get<Ad[]>(`${baseURL}/public`),
           axios.get<Ad[]>(`${baseURL}/public/main-content`)
         ]);
-
+    
+        // Add these logs
+        console.log('Regular ads response:', regularResponse.data);
+        console.log('Main content ads response:', mainContentResponse.data);
+    
         setAds(regularResponse.data);
         setMainContentAds(mainContentResponse.data.filter(ad => 
           ad.location === "MainContent"
