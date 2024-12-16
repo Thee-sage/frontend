@@ -18,6 +18,18 @@ export const RotatingMainContentAds = ({ ads }: RotatingMainContentAdsProps) => 
   const transitionIdRef = useRef<NodeJS.Timeout | null>(null);
   const sortedAdsRef = useRef<Ad[]>([]);
 
+  // Add debug logging
+  useEffect(() => {
+    console.log('RotatingMainContentAds mounted');
+    console.log('Initial ads:', ads);
+    console.log('Initial settings:', settings);
+  }, []);
+
+  useEffect(() => {
+    console.log('Ads changed:', ads);
+    console.log('Ads length:', ads?.length);
+  }, [ads]);
+
   useEffect(() => {
     const socket = io(baseURL, {
       transports: ['websocket', 'polling']
@@ -50,10 +62,16 @@ export const RotatingMainContentAds = ({ ads }: RotatingMainContentAdsProps) => 
   }, []);
 
   useEffect(() => {
-    if (!ads?.length || settings.totalCycleTime === null) return;
+    if (!ads?.length || settings.totalCycleTime === null) {
+      console.log('Early return condition met:', {
+        adsLength: ads?.length,
+        totalCycleTime: settings.totalCycleTime
+      });
+      return;
+    }
 
     const cleanup = () => {
-      console.log('1. Cleaning up previous rotation cycle');
+      console.log('Cleaning up previous rotation cycle');
       if (intervalIdRef.current) clearInterval(intervalIdRef.current);
       if (transitionIdRef.current) clearTimeout(transitionIdRef.current);
     };
@@ -66,6 +84,8 @@ export const RotatingMainContentAds = ({ ads }: RotatingMainContentAdsProps) => 
       return orderA - orderB;
     });
 
+    console.log('Sorted ads:', sortedAdsRef.current);
+
     const numAds = sortedAdsRef.current.length;
     const weights = Array(numAds).fill(0).map((_, index) => Math.pow(2, numAds - index - 1));
     const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
@@ -73,7 +93,7 @@ export const RotatingMainContentAds = ({ ads }: RotatingMainContentAdsProps) => 
       Math.floor((weight / totalWeight) * settings.totalCycleTime!)
     );
 
-
+    console.log('Display times calculated:', displayTimes);
 
     const rotateAd = () => {
       setIsTransitioning(true);
@@ -82,7 +102,7 @@ export const RotatingMainContentAds = ({ ads }: RotatingMainContentAdsProps) => 
         setIsTransitioning(false);
         setCurrentAdIndex(prevIndex => {
           const nextIndex = (prevIndex + 1) % numAds;
-          console.log('2. Rotation State:', {
+          console.log('Rotation State:', {
             previousAd: sortedAdsRef.current[prevIndex].title,
             nextAd: sortedAdsRef.current[nextIndex].title,
             displayTimeMinutes: displayTimes[nextIndex] / 60000
@@ -97,7 +117,15 @@ export const RotatingMainContentAds = ({ ads }: RotatingMainContentAdsProps) => 
     return cleanup;
   }, [ads, settings.totalCycleTime]);
 
-  if (!ads?.length || !sortedAdsRef.current[currentAdIndex]) return null;
+  // Add debug logging before return
+  if (!ads?.length || !sortedAdsRef.current[currentAdIndex]) {
+    console.log('Returning null due to:', {
+      adsLength: ads?.length,
+      currentAd: sortedAdsRef.current[currentAdIndex],
+      currentIndex: currentAdIndex
+    });
+    return null;
+  }
 
   return (
     <div className={styles.mainContentSection}>
