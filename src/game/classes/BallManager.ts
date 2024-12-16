@@ -3,7 +3,6 @@ import { Obstacle, Sink, createObstacles, createSinks } from "../objects";
 import { pad, unpad } from "../padding";
 import { Ball } from "./Ball";
 import backgroundImage from './background.jpg';
-
 export class BallManager {
     private balls: Ball[];
     private canvasRef: HTMLCanvasElement;
@@ -15,6 +14,7 @@ export class BallManager {
     private hoveredSink: number | null = null;
     private backgroundImage: HTMLImageElement;
     private isBackgroundLoaded: boolean = false;
+    private scale: number = 1;
 
     private probabilities: Record<string, number> = {
         "0": 0.2,      
@@ -44,24 +44,53 @@ export class BallManager {
         this.sinks = createSinks();
         this.onFinish = onFinish;
         
+        // Set initial canvas size
+        this.setCanvasSize();
+        
         this.backgroundImage = new Image();
         this.backgroundImage.src = backgroundImage;
         this.backgroundImage.onload = () => {
             this.isBackgroundLoaded = true;
         };
         
+        // Add event listeners
+        window.addEventListener('resize', this.handleResize.bind(this));
         this.canvasRef.addEventListener('mousemove', this.handleMouseMove.bind(this));
         
         this.update();
     }
 
+    private setCanvasSize() {
+        const container = this.canvasRef.parentElement;
+        if (!container) return;
+
+        // Get container dimensions
+        const containerWidth = container.clientWidth;
+        const containerHeight = container.clientHeight;
+
+        // Calculate scale while maintaining aspect ratio
+        const scaleX = containerWidth / WIDTH;
+        const scaleY = containerHeight / HEIGHT;
+        this.scale = Math.min(scaleX, scaleY);
+
+        // Set canvas size
+        this.canvasRef.width = WIDTH * this.scale;
+        this.canvasRef.height = HEIGHT * this.scale;
+
+        // Scale the context
+        this.ctx.scale(this.scale, this.scale);
+    }
+
+    private handleResize() {
+        // Reset the scale and canvas size
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+        this.setCanvasSize();
+    }
+
     private handleMouseMove(event: MouseEvent) {
         const rect = this.canvasRef.getBoundingClientRect();
-        const scaleX = this.canvasRef.width / rect.width;
-        const scaleY = this.canvasRef.height / rect.height;
-        
-        const x = (event.clientX - rect.left) * scaleX;
-        const y = (event.clientY - rect.top) * scaleY;
+        const x = (event.clientX - rect.left) / this.scale;
+        const y = (event.clientY - rect.top) / this.scale;
     
         this.hoveredSink = null;
         for (let i = 0; i < this.sinks.length; i++) {
@@ -79,10 +108,19 @@ export class BallManager {
     }
 
     addBall(startX?: number) {
-        const newBall = new Ball(startX || pad(WIDTH / 2 + 13), pad(50), ballRadius, 'gold', this.ctx, this.obstacles, this.sinks, (index) => {
-            this.balls = this.balls.filter(ball => ball !== newBall);
-            this.onFinish?.(index, startX)
-        });
+        const newBall = new Ball(
+            startX || pad(WIDTH / 2 + 13),
+            pad(50),
+            ballRadius,
+            'gold',
+            this.ctx,
+            this.obstacles,
+            this.sinks,
+            (index) => {
+                this.balls = this.balls.filter(ball => ball !== newBall);
+                this.onFinish?.(index, startX);
+            }
+        );
         this.balls.push(newBall);
     }
 
@@ -110,9 +148,9 @@ export class BallManager {
             return {background: '#ffbf00', color: 'white'};
         }
         if (index <= 7 || index >= 9) {
-            return {background: '#ffff00', color: 'white'};
+            return {background: '#ffff00', color: 'black'};
         }
-        return {background: '#7fff00', color: 'white'};
+        return {background: '#7fff00', color: 'black'};
     }
 
     private drawSinks() {
@@ -195,17 +233,21 @@ export class BallManager {
     }
 
     draw() {
-        this.ctx.clearRect(0, 0, WIDTH, HEIGHT);
+        // Clear with scale
+        this.ctx.save();
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+        this.ctx.clearRect(0, 0, this.canvasRef.width, this.canvasRef.height);
+        this.ctx.restore();
         
         if (this.isBackgroundLoaded) {
             this.ctx.drawImage(this.backgroundImage, 0, 0, WIDTH, HEIGHT);
             
             // Optional semi-transparent overlay for better visibility
-            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';  // Darkened overlay for better contrast
+            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
             this.ctx.fillRect(0, 0, WIDTH, HEIGHT);
         } else {
             const gradient = this.ctx.createLinearGradient(0, 0, 0, HEIGHT);
-            gradient.addColorStop(0, '#181818');  // Darker background
+            gradient.addColorStop(0, '#181818');
             gradient.addColorStop(1, '#282828');
             this.ctx.fillStyle = gradient;
             this.ctx.fillRect(0, 0, WIDTH, HEIGHT);
@@ -228,6 +270,7 @@ export class BallManager {
         if (this.requestId) {
             cancelAnimationFrame(this.requestId);
         }
+        window.removeEventListener('resize', this.handleResize.bind(this));
         this.canvasRef.removeEventListener('mousemove', this.handleMouseMove.bind(this));
     }
 

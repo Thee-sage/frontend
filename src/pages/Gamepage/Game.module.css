@@ -11,16 +11,12 @@
     border-radius: 32px;
     overflow: hidden;
     padding: 4px;
-    box-shadow: 
-        0 0 80px rgba(250, 254, 0, 0.2),
-        0 0 120px rgba(178, 112, 255, 0.1);
+   
 }
 
 .innerContainer {
-    background: linear-gradient(90deg, 
-        rgba(111, 76, 255, 0.12) 0%, 
-        rgba(178, 112, 255, 0.12) 100%
-    );
+    
+    background: linear-gradient(90deg, #000000 0%, #000000 100%);
     border-radius: 28px;
     backdrop-filter: blur(10px);
     padding: 3rem;
@@ -124,7 +120,6 @@
 }
 
 .inputGroup::after {
-    content: 'ZIXOS';
     position: absolute;
     right: 1rem;
     top: 50%;
@@ -144,8 +139,24 @@
     background: rgba(17, 24, 39, 0.8);
     color: #4ade80;
     font-size: 1.1rem;
+    padding-right: 3rem;
     transition: all 0.3s ease;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+.inputWrapper {
+    position: relative;
+    width: 100%;
+}
+
+.inputValue {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    color: #4ade80;
+    pointer-events: none;
 }
 
 .input:focus {
@@ -300,7 +311,53 @@
     content: '⚠️';
     font-size: 1.2rem;
 }
+/* Update these styles in your Game.module.css file */
 
+/* Add these new styles to your Game.module.css file */
+
+.lastMultipliersContainer {
+    margin-top: 1.5rem;
+    padding: 1.25rem;
+    background: rgba(17, 24, 39, 0.95);
+    border-radius: 16px;
+    border: 1px solid rgba(74, 222, 128, 0.1);
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(74, 222, 128, 0.1);
+}
+
+.lastMultipliersTitle {
+    color: #f9fafb;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
+.multipliersGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+}
+
+.multiplierBadge {
+    background: rgba(74, 222, 128, 0.1);
+    border: 1px solid rgba(74, 222, 128, 0.2);
+    color: #4ade80;
+    padding: 0.5rem;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.multiplierBadge:hover {
+    transform: translateY(-2px);
+    background: rgba(74, 222, 128, 0.15);
+    box-shadow: 0 4px 12px rgba(74, 222, 128, 0.15);
+}
 /* Enhanced Responsive Design */
 @media (max-width: 1400px) {
     .gameContent {
@@ -343,5 +400,77 @@
 
     .controlsPanel {
         max-width: 100%;
+    }
+}
+
+
+
+
+
+.tooltipContainer {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: help;
+    z-index: 99999;
+}
+
+.tooltip {
+    visibility: hidden;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(17, 24, 39, 0.95);
+    color: #fff;
+    text-align: center;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(74, 222, 128, 0.2);
+    backdrop-filter: blur(4px);
+    width: max-content;
+    min-width: 200px;
+    max-width: 300px;
+    margin-bottom: 8px;
+    /* Ensure text wraps properly */
+    white-space: normal;
+    line-height: 1.4;
+}
+
+.tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgba(17, 24, 39, 0.95) transparent transparent transparent;
+}
+
+.tooltipContainer:hover .tooltip {
+    visibility: visible;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Add media query for mobile devices */
+@media (max-width: 768px) {
+    .tooltip {
+        min-width: 150px;
+        font-size: 0.8rem;
+        padding: 0.5rem 0.75rem;
     }
 }

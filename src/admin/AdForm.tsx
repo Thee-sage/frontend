@@ -18,12 +18,23 @@ interface FormErrors {
   casino?: string;
   orderInCasinosPage?: string;
 }
-
+interface AdState {
+  title: string;
+  description: string;
+  link: string;
+  rating: number;
+  service: string;
+  location: string;
+  isShowInMainPage: boolean;
+  percentageInHomePage: number;
+  orderInCasinosPage: number;
+  casino: string | null;  // Allow null here
+}
 const DESCRIPTION_MAX_LENGTH = 150;
 
 export function AdForm({ adId, onSuccess }: AdFormProps) {
   const { token, isAuthenticated } = useAdminAuth();
-  const [ad, setAd] = useState({
+  const [ad, setAd] = useState<AdState>({
     title: '',
     description: '',
     link: '',
@@ -33,8 +44,8 @@ export function AdForm({ adId, onSuccess }: AdFormProps) {
     isShowInMainPage: false,
     percentageInHomePage: 0,
     orderInCasinosPage: 0,
-    casino: ''
-  });
+    casino: null  // Initialize as null instead of empty string
+});
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [message, setMessage] = useState("");
@@ -55,20 +66,36 @@ export function AdForm({ adId, onSuccess }: AdFormProps) {
     if (name === 'percentageInHomePage') return;
     
     if (name === 'description') {
-      if (value.length <= DESCRIPTION_MAX_LENGTH) {
-        setAd(prevAd => ({ ...prevAd, [name]: value }));
-        setCharactersLeft(DESCRIPTION_MAX_LENGTH - value.length);
-        setErrors(prev => ({ ...prev, description: undefined }));
-      }
-      return;
+        if (value.length <= DESCRIPTION_MAX_LENGTH) {
+            setAd(prevAd => ({ ...prevAd, [name]: value }));
+            setCharactersLeft(DESCRIPTION_MAX_LENGTH - value.length);
+            setErrors(prev => ({ ...prev, description: undefined }));
+        }
+        return;
+    }
+
+    // Add special handling for location changes
+    if (name === 'location') {
+        setAd(prevAd => ({
+            ...prevAd,
+            [name]: value,
+            // Reset MainContent-specific fields when changing to other locations
+            ...(value !== 'MainContent' && {
+                casino: null,
+                orderInCasinosPage: 0,
+                isShowInMainPage: false
+            })
+        }));
+    } else {
+        // Original handling for other fields
+        setAd(prevAd => ({
+            ...prevAd,
+            [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
+        }));
     }
     
-    setAd(prevAd => ({
-      ...prevAd,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
-    }));
     setErrors(prev => ({ ...prev, [name]: undefined }));
-  };
+};
 
   const validateForm = () => {
     const newErrors: FormErrors = {};
@@ -121,28 +148,27 @@ export function AdForm({ adId, onSuccess }: AdFormProps) {
 
   useEffect(() => {
     if (adId && isAuthenticated) {
-      async function fetchAd() {
-        try {
-          const response = await authAxios.get(`/ads/ad/${adId}`);
-          const adData = {
-            ...response.data,
-            percentageInHomePage: 0,
-            description: response.data.description.substring(0, DESCRIPTION_MAX_LENGTH)
-          };
-          setAd(adData);
-          setCharactersLeft(DESCRIPTION_MAX_LENGTH - adData.description.length);
-          if (response.data.imageUrl) {
-            setPreviewUrl(`${baseURL}${response.data.imageUrl}`);
-          }
-        } catch (error) {
-          console.error('Error fetching ad:', error);
-          setMessage("Failed to fetch ad details");
+        async function fetchAd() {
+            try {
+                const response = await authAxios.get(`/ads/ad/${adId}`);
+                const adData = {
+                    ...response.data,
+                    percentageInHomePage: 0,
+                    description: response.data.description.substring(0, DESCRIPTION_MAX_LENGTH),
+                    casino: response.data.casino?._id || null
+                };
+                setAd(adData);
+                setCharactersLeft(DESCRIPTION_MAX_LENGTH - adData.description.length);
+                if (response.data.imageUrl) {
+                    setPreviewUrl(`${baseURL}${response.data.imageUrl}`);
+                }
+            } catch (error) {
+                setMessage("Failed to fetch ad details");
+            }
         }
-      }
-      fetchAd();
+        fetchAd();
     }
-  }, [adId, isAuthenticated, authAxios]);
-
+}, [adId, isAuthenticated, authAxios]);
   useEffect(() => {
     return () => {
       if (previewUrl) {
@@ -173,14 +199,16 @@ export function AdForm({ adId, onSuccess }: AdFormProps) {
         ...ad,
         percentageInHomePage: 0
       };
-      
-      Object.entries(submitData).forEach(([key, value]) => {
-        if (key === 'isShowInMainPage') {
-          formData.append(key, value.toString());
-        } else {
-          formData.append(key, value?.toString() || '');
-        }
-      });
+      // In handleSubmit function, update the Object.entries section
+Object.entries(submitData).forEach(([key, value]) => {
+  if (key === 'isShowInMainPage') {
+      formData.append(key, String(value));
+  } else if (value === null) {
+      formData.append(key, '');
+  } else {
+      formData.append(key, String(value));
+  }
+});
       
       if (selectedImage) {
         formData.append('image', selectedImage);
@@ -198,20 +226,20 @@ export function AdForm({ adId, onSuccess }: AdFormProps) {
       setMessage(response.data.message || `Ad ${adId ? 'updated' : 'created'} successfully`);
       if (!adId) {
         setAd({
-          title: '',
-          description: '',
-          link: '',
-          rating: 0,
-          service: 'GoogleAdSense',
-          location: 'Header',
-          isShowInMainPage: false,
-          percentageInHomePage: 0,
-          orderInCasinosPage: 0,
-          casino: ''
+            title: '',
+            description: '',
+            link: '',
+            rating: 0,
+            service: 'GoogleAdSense',
+            location: 'Header',
+            isShowInMainPage: false,
+            percentageInHomePage: 0,
+            orderInCasinosPage: 0,
+            casino: null  // Keep consistent with null instead of empty string
         });
         setSelectedImage(null);
         setPreviewUrl('');
-      }
+    }
       if (onSuccess) {
         onSuccess();
       }

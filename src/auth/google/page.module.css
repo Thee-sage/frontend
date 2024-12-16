@@ -1,27 +1,60 @@
-.googleButton {
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .googleButton::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: linear-gradient(
-      to right,
-      transparent 0%,
-      rgba(0, 0, 0, 0.05) 50%,
-      transparent 100%
-    );
-    transform: translateX(-100%);
-    transition: transform 0.5s ease;
-  }
-  
-  .googleButton:hover::after {
-    transform: translateX(100%);
-  }
-  
-  .googleButton:active {
-    transform: scale(0.98);
-  }
+.buttonContainer {
+  position: relative;
+  height: 40px;
+  width: 240px;
+}
+
+.wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: box-shadow 200ms;
+  z-index: 1;
+}
+
+.googleButtonWrapper {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  z-index: 3;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+}
+
+.googleButtonWrapper > div {
+  pointer-events: auto;
+}
+
+.customButton {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(55, 65, 81);
+  color: white;
+  font-weight: 600;
+  border-radius: 12px;
+  border: 1px solid #2ED573;
+  transition: all 200ms;
+  z-index: 2;
+}
+
+
+
+.textContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.buttonText {
+  white-space: nowrap;
+}

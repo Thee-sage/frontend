@@ -1,0 +1,148 @@
+.footer {
+  background: rgba(20, 25, 35, 1);
+  backdrop-filter: blur(10px);
+  padding: 4rem 2rem 2rem;
+  color: #a4b0be;
+  position: relative;
+  border-top: 1px solid rgba(46, 213, 115, 0.1);
+  width: 100%;
+  /* Remove margin-top since we're using flex layout */
+  margin-top: 0;
+}
+  
+  .footerContent {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 3rem;
+  }
+  
+  .footerSection {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  
+  .footerSection h3 {
+    color: #2ED573;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  
+  .footerSection p {
+    line-height: 1.6;
+    margin: 0;
+  }
+  
+  .footerSection ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .footerSection ul li {
+    margin-bottom: 0.75rem;
+  }
+  
+  .footerSection a {
+    color: #a4b0be;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  
+  .footerSection a:hover {
+    color: #2ED573;
+  }
+  
+  .disclaimer {
+    background: rgba(46, 213, 115, 0.1);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(46, 213, 115, 0.2);
+    font-size: 0.875rem;
+  }
+  
+  .disclaimer strong {
+    color: #2ED573;
+  }
+  
+  .socialLinks {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .socialLink {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    background: rgba(46, 213, 115, 0.1);
+    transition: all 0.2s ease;
+  }
+  
+  .socialLink:hover {
+    background: rgba(46, 213, 115, 0.2);
+    transform: translateX(4px);
+  }
+  
+  .footerBottom {
+    margin-top: 4rem;
+  }
+  
+  .footerDivider {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgba(46, 213, 115, 0.2),
+      transparent
+    );
+    margin-bottom: 2rem;
+  }
+  
+  .footerCopyright {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .footerLinks {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .divider {
+    color: rgba(46, 213, 115, 0.3);
+  }
+  
+  @media (max-width: 768px) {
+    .footer {
+      padding: 3rem 1rem 1.5rem;
+    }
+  
+    .footerContent {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  
+    .footerCopyright {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  
+    .footerLinks {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+  
+    .divider {
+      display: none;
+    }
+  }

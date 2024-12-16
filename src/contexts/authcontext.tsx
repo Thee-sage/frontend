@@ -96,29 +96,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   
   const loginWithEmailAndPassword = async (email: string, password: string) => {
     try {
-      console.log("Attempting email login with email:", email);
-      const res = await axios.post(`${baseURL}/api/auth/login,`, { email, password });
-      console.log("Email login success, profile data:", res.data);
-      
-      // Store the JWT token in localStorage
-      localStorage.setItem("token", res.data.token);  // Assuming `res.data.token` contains the JWT
-  
-      setProfile({
-        firstName: res.data.profile.firstName,
-        lastName: res.data.profile.lastName,
-        email: res.data.profile.email,
-        role: res.data.profile.role,
-        uid: res.data.userId,
-      });
-      
-      setUser(res.data.userId);
-      localStorage.setItem('uid', res.data.userId);
-      navigate('/game');
+        console.log("Attempting email login with email:", email);
+        const res = await axios.post(`${baseURL}/api/auth/login`, { email, password });
+        console.log("Email login success, profile data:", res.data);
+        
+        // Store the JWT token
+        localStorage.setItem("token", res.data.token);
+        
+        // Set user profile using the correct response structure
+        setProfile({
+            firstName: res.data.user.firstName,
+            lastName: res.data.user.lastName,
+            email: res.data.user.email,
+            role: res.data.user.role,
+            uid: res.data.uid
+        });
+        
+        setUser(res.data.uid);
+        localStorage.setItem('uid', res.data.uid);
+        navigate('/game');
     } catch (error: any) {
-      console.error('Email login failed', error);
-      throw new Error(error.response?.data?.message || 'Login failed');
+        console.error('Email login failed', error);
+        throw new Error(error.response?.data?.message || 'Login failed');
     }
-  };
+};
   
 
   const initiateDeleteAccount = async (password: string): Promise<{ success: boolean; message: string }> => {

@@ -89,9 +89,10 @@
 }
 
 .heroSection {
-    padding: 6rem 1rem;
+  padding: 80px;
     position: relative;
     z-index: 1;
+    height:400px;
 }
 
 .heroContent {
@@ -176,7 +177,8 @@
 }
 
 .ctaButton:hover {
-    transform: translateY(-2px) scale(1.05);
+    transform: translateY(-2px) scale(1.01);
+    color: #fff;
     box-shadow: 0 0 40px rgba(124, 58, 237, 0.6);
     border-color: rgba(255, 255, 255, 0.2);
 }
@@ -189,13 +191,21 @@
     padding: 4rem 1rem;
     position: relative;
     z-index: 1;
-    background: rgba(15, 23, 42, 0.5);
+    background: rgba(15, 23, 42, 0.1);
 }
-
+.abc{
+    display: flex;
+    flex-direction: column;
+    margin-top: 200px;
+    margin-bottom: 200px;
+    padding-left: 80px;
+    padding-right: 80px;
+}
 .demoContainer {
-    max-width: 80rem;
+    max-width: 1400px;
     margin: 0 auto;
-    background: rgba(17, 24, 39, 0.8);
+    
+    background: rgba(17, 24, 39, 1);
     border-radius: 1.5rem;
     padding: 3rem;
     box-shadow: 0 0 60px rgba(124, 58, 237, 0.2);

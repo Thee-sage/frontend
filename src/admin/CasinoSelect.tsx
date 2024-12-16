@@ -11,8 +11,8 @@ interface Casino {
 }
 
 interface CasinoSelectProps {
-  value?: string;
-  onChange: (casinoId: string) => void;
+  value: string | null | undefined;
+  onChange: (value: string | null) => void;
   error?: string;
 }
 

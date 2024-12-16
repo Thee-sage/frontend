@@ -1,0 +1,138 @@
+.infoContainer {
+  margin: 2.5rem 0;
+  padding: 0.5rem;
+  max-width: 100%;
+  position: relative;
+}
+
+.formTitle {
+  color: #2ED573;
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 24px;
+  text-shadow: 0 0 20px rgba(46, 213, 115, 0.3);
+}
+
+.gridContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  margin-bottom: 1.25rem;
+}
+.infoBox {
+  background: rgba(20, 25, 35, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 0.75rem;
+  padding: 1.75rem;
+  transition: all 0.3s ease;
+  position: relative;
+  border: 1px solid rgba(46, 213, 115, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.infoBox::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 0.75rem;
+  padding: 1px;
+  background: linear-gradient(
+    60deg,
+    rgba(46, 213, 115, 0.1),
+    rgba(46, 213, 115, 0.05),
+    rgba(255, 255, 255, 0.05)
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+.divider {
+  position: relative;
+  width: 100%;
+  height: 2px;
+  margin: 0 0 24px 0;
+  background: linear-gradient(
+      to right,
+      #2ED573,
+      #2ED573 25%,
+      rgba(46, 213, 115, 0.5) 50%,
+      rgba(46, 213, 115, 0.1) 100%
+  );
+}
+
+/* Test styles to debug - you can remove these after confirming visibility */
+.dividerContainer {
+  width: 100%;
+  padding: 4px 0;
+  margin-bottom: 20px;
+}
+.infoBox:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border-color: rgba(46, 213, 115, 0.2);
+}
+
+.inputLabel {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(46, 213, 115, 0.15);
+  position: relative;
+}
+
+.inputLabel::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 50px;
+  height: 2px;
+  background: #2ED573;
+}
+
+.featureList {
+  display: grid;
+  gap: 0.875rem;
+}
+
+.featureList li {
+  color: #a4b0be;
+  padding: 0.75rem 1rem;
+  background: rgba(16, 20, 28, 0.5);
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.featureList li::before {
+  content: "•";
+  color: #2ED573;
+  font-weight: bold;
+  margin-right: 0.875rem;
+}
+
+.featureList li:hover {
+  color: #ffffff;
+  background: rgba(46, 213, 115, 0.1);
+  transform: translateX(5px);
+}
+
+.message {
+  font-size: 24px;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  color: #f59e0b;
+  background: rgba(16, 20, 28, 0.5);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  transition: all 0.2s ease;
+}
+
+.message:hover {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.3);
+}

@@ -5,7 +5,7 @@ import axios from "axios";
 import io from "socket.io-client";
 import logo from "../assets/logo.svg";
 import { baseURL } from "../utils";
-import AccountManagement from "../abc";
+import AccountManagement from "../accountmangement/accountmangement";
 import { useWallet } from "../contexts/Walletcontext";
 import { useAuth } from "../contexts/authcontext";
 import styles from "./page.module.css";
@@ -23,16 +23,19 @@ const socket = io(baseURL, {
 
 const Navbar: React.FC = () => {
   const location = useLocation();
-  const isDemo = location.pathname === '/demo' || location.pathname === '/';
+  const isDemo = ['/demo', '/', '/auth/login', '/auth/signup', '/casinos'].includes(location.pathname) || 
+               location.pathname.startsWith('/auth/');
     const { remainingZixos } = useWallet();
     const { theme, toggleTheme } = useTheme();
-    const { user, logout } = useAuth();
+    const { user } = useAuth();
     const [walletBalance, setWalletBalance] = useState<number | null>(null);
     const [requestAmount, setRequestAmount] = useState<number>(0);
     const [requestMessage, setRequestMessage] = useState<string>("");
     const [isExpanded, setIsExpanded] = useState<boolean>(false);
     const [isRequestOpen, setIsRequestOpen] = useState<boolean>(false);
     const [isInitialFetchDone, setIsInitialFetchDone] = useState<boolean>(false);
+
+ 
 
     useEffect(() => {
         if (!socket.connected) {
@@ -120,25 +123,82 @@ const Navbar: React.FC = () => {
 
     const toggleMenu = () => setIsExpanded((prev) => !prev);
 
-    const renderRequestForm = () => (
-        <div className={`${styles.requestForm} ${isRequestOpen ? styles.show : ""}`}>
+    const renderRequestForm = () => {
+        if (!user) {
+          return (
+            <div className={`${styles.requestForm} ${isRequestOpen ? styles.show : ""}`}>
+              <div className={styles.loginRequired}>
+                <h4 className={styles.formTitle}>Login Required</h4>
+                <p className={styles.loginMessage}>
+                  Please login or create an account to request Zixos and access all game features.
+                </p>
+                <div className={styles.loginButtons}>
+                  <Link to="/auth/login" className={styles.loginButton}>
+                    Login
+                  </Link>
+                  <Link to="/auth/signup" className={styles.signupButton}>
+                    Sign Up
+                  </Link>
+                </div>
+                <button 
+                  onClick={() => setIsRequestOpen(false)} 
+                  className={styles.closeButton}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          );
+        }
+      
+        if (requestMessage) {
+          return (
+            <div className={`${styles.requestForm} ${isRequestOpen ? styles.show : ""}`}>
+              <h4 className={styles.formTitle}>Request Status</h4>
+              <p className={styles.message}>{requestMessage}</p>
+              <button onClick={() => {
+                setIsRequestOpen(false);
+                setRequestMessage("");
+                setRequestAmount(0);
+              }} className={styles.closeButton}>
+                Close
+              </button>
+            </div>
+          );
+        }
+      
+        return (
+          <div className={`${styles.requestForm} ${isRequestOpen ? styles.show : ""}`}>
             <h4 className={styles.formTitle}>Request More Zixos</h4>
             <input
-                type="number"
-                value={requestAmount}
-                onChange={(e) => setRequestAmount(Number(e.target.value))}
-                placeholder="Enter amount"
-                className={styles.formInput}
+              type="number"
+              value={requestAmount}
+              onChange={(e) => setRequestAmount(Number(e.target.value))}
+              placeholder="Enter amount"
+              className={styles.formInput}
+              min="1"
             />
             <button onClick={handleRequestMoney} className={styles.submitButton}>
-                Submit Request
+              Submit Request
             </button>
-            {requestMessage && <p className={styles.message}>{requestMessage}</p>}
             <button onClick={() => setIsRequestOpen(false)} className={styles.closeButton}>
-                Close
+              Close
             </button>
+          </div>
+        );
+      };
+      
+      const renderRequestButton = () => (
+        <div className={styles.requestContainer}>
+          <button 
+            onClick={() => setIsRequestOpen(true)} 
+            className={styles.requestButton}
+            disabled={isDemo}
+          >
+            {!user ? 'Login to Request Zixos' : 'Request Zixos'}
+          </button>
         </div>
-    );
+      );
 
     const renderBurgerMenu = () => (
         <div className={styles.menu}>
@@ -193,28 +253,32 @@ const Navbar: React.FC = () => {
         if (isExpanded) {
             return (
                 <motion.div
-                    className={styles.burgerMenuContent}
+                    className={`${styles.burgerMenuContent2} ${
+                        !user ? styles.burgerMenuContent : styles.burgerMenuContent1
+                    }`}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.9 }}
                 >
-                    <div className={styles.menuContainer}>
+                    <div >
                         {!user ? (
                             <>
+                            <div className={styles.signn}>
                                 <Link to="/auth/login" className={styles.menuLink}>
                                     Sign In
                                 </Link>
                                 <Link to="/auth/signup" className={styles.menuLink}>
                                     Sign Up
                                 </Link>
+                                </div>
                             </>
                         ) : (
-                            <>
-                                <AccountManagement />
-                                <button onClick={logout} className={styles.logoutButton}>
-                                    Log Out
-                                </button>
-                            </>
+                         <>
+                                <div className={styles.accountManagementWrapper}>
+                                    <AccountManagement />
+                                </div>
+                              
+                                </>
                         )}
                     </div>
                 </motion.div>
@@ -223,27 +287,17 @@ const Navbar: React.FC = () => {
         return null;
     };
     
-    const renderRequestButton = () => (
-        <div className={`${styles.requestContainer} ${isDemo ? styles.lockedFeatureContainer : ''}`}>
-        {isDemo && <div className={styles.lockedFeatureOverlay} />}
-        <button 
-            onClick={() => !isDemo && setIsRequestOpen(true)} 
-            className={`${styles.requestButton} ${isDemo ? styles.lockedFeatureContent : ''}`}
-            disabled={isDemo}
-        >
-            Request Zixos
-        </button>
-    </div>
-  );
+    
+   
 
     return (
 <motion.nav className={styles.mainclass}>
   <img src={logo} alt="Logo" className={styles.logo} />
   
   <div className={styles.wallet}>
-    <p className={styles.balance}>
-      Remaining Zixos: {walletBalance !== null ? walletBalance : "Loading..."}
-    </p>
+  <p className={styles.balance}>
+  Remaining Zixos: {walletBalance !== null ? Number(walletBalance).toFixed(2) : "Loading..."}
+</p>
     {renderRequestButton()}
   </div>
 

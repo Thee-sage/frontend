@@ -1,0 +1,96 @@
+.adCard {
+  background: rgba(20, 25, 35, 0.85);
+  backdrop-filter: blur(10px);
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(46, 213, 115, 0.1);
+  width: 600px;
+  transition: all 0.3s ease;
+}
+
+.adCard:hover {
+  transform: scale(1.05);
+}
+
+.imageContainer {
+  background: rgba(15, 23, 41, 0.3);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.image {
+  width: auto;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.2s ease;
+}
+
+.image:hover {
+  transform: scale(1.05);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.title {
+  color: #ffffff;
+  font-size: 1.5rem;    /* Increased from 1.125rem */
+  font-weight: 500;
+  margin: 0;
+}
+
+.description {
+  color: #a4b0be;
+  font-size: 1.125rem;  /* Increased from 0.875rem */
+  line-height: 1.5;     /* Slightly increased for better readability */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.75rem;  /* Slightly increased from 0.5rem */
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #ffffff;
+  font-size: 1.125rem;  /* Added font size for rating */
+}
+
+.starIcon {
+  color: #FFD700;
+  font-size: 1.25rem;   /* Added specific size for star */
+}
+
+.button {
+  background: rgba(46, 213, 115, 0.1);
+  color: #2ED573;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-size: 1.125rem;  /* Increased from 0.875rem */
+  text-decoration: none;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.button:hover {
+  background: rgba(46, 213, 115, 0.2);
+}

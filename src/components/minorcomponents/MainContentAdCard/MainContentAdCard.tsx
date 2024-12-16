@@ -14,15 +14,24 @@ const DEFAULT_PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 export const MainContentAdCard = ({ ad }: MainContentAdCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showQuickInfo, _setShowQuickInfo] = useState(false);
-  
+
   const imageUrl = ad.imageUrl?.startsWith('http')
     ? ad.imageUrl
     : ad.imageUrl
     ? `${baseURL}${ad.imageUrl}`
     : DEFAULT_PLACEHOLDER;
-    
+
   const bonusText = ad.casino?.offer || ad.description;
   const shouldTruncate = bonusText?.length > 50;
+
+  // Function to handle T&C link click
+  const handleTCClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (ad.casino) {
+      // Navigate to casino details page with terms section
+      window.location.href = `/casinos/${ad.casino._id}#terms`;
+    }
+  };
 
   return (
     <div className={styles.adCard}>
@@ -36,39 +45,55 @@ export const MainContentAdCard = ({ ad }: MainContentAdCardProps) => {
             }}
           />
         </div>
-        <div className={styles.title}>{ad.title}</div>
       </div>
 
       <div className={styles.nameandbonus}>
+        <div className={styles.title}>{ad.title}</div>
         <div className={styles.bonusContainer}>
           {ad.casino ? (
             <>
               <span>BONUS:</span>{' '}
               {shouldTruncate ? (
                 <>
-                  {isExpanded ? bonusText : `${bonusText.slice(0, 50)}...`}{' '}
-                  <button className={styles.readMore} onClick={() => setIsExpanded(!isExpanded)}>
+                  {isExpanded ? bonusText : `${bonusText.slice(0, 100)}...`}{' '}
+                  <button 
+                    className={styles.readMore} 
+                    onClick={() => setIsExpanded(!isExpanded)}
+                  >
                     {isExpanded ? 'Read Less' : 'Read More'}
                   </button>
                 </>
               ) : (
                 bonusText
               )}
-              <a href="#" className={styles.tcLink}>T&Cs apply</a>
+              <Link 
+                to={`/casinos/${ad.casino._id}#terms`} 
+                className={styles.tcLink}
+                onClick={handleTCClick}
+              >
+                T&Cs apply
+              </Link>
             </>
           ) : (
             <>
               {shouldTruncate ? (
                 <>
-                  {isExpanded ? ad.description : `${ad.description?.slice(0, 50)}...`}{' '}
-                  <button className={styles.readMore} onClick={() => setIsExpanded(!isExpanded)}>
+                  {isExpanded ? ad.description : `${ad.description?.slice(0, 100)}...`}{' '}
+                  <button 
+                    className={styles.readMore} 
+                    onClick={() => setIsExpanded(!isExpanded)}
+                  >
                     {isExpanded ? 'Read Less' : 'Read More'}
                   </button>
                 </>
               ) : (
                 ad.description
               )}
-              {ad.description && <a href="#" className={styles.tcLink}>T&Cs apply</a>}
+              {ad.description && (
+                <a href="#" className={styles.tcLink} onClick={(e) => e.preventDefault()}>
+                  T&Cs apply
+                </a>
+              )}
             </>
           )}
         </div>
@@ -76,35 +101,19 @@ export const MainContentAdCard = ({ ad }: MainContentAdCardProps) => {
 
       <div className={styles.content}>
         <div className={styles.header}>
-          <div className={styles.titleSection}>
-            <div>
-              <p className={styles.bonus}>{ad.description}</p>
-            </div>
-          </div>
-
           <div className={styles.buttons}>
+          <div className={styles.description}>{ad.description}</div>
+          <div className={styles.butt}>
             {ad.casino && (
               <Link 
-                to="/casinos"
+              to={`/casinos#${ad.casino._id}`}
                 className={`${styles.quickInfo} ${showQuickInfo ? styles.active : ''}`}
               >
                 Quick info
-                <svg 
-                  className={styles.arrow}
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth="2" 
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
+                
               </Link>
             )}
-            
+
             <a
               href={ad.link}
               target="_blank"
@@ -113,10 +122,12 @@ export const MainContentAdCard = ({ ad }: MainContentAdCardProps) => {
             >
               Visit {ad.casino ? 'casino' : 'site'}
             </a>
+            </div>
           </div>
         </div>
-
+       <div className={styles.safetyIndex}>
         {ad.casino && <SafetyIndex trustIndex={ad.casino.trustIndex} />}
+        </div>
       </div>
     </div>
   );

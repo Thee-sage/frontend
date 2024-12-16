@@ -1,0 +1,821 @@
+.policyContainer {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f1729 0%, #1a0f2e 100%);
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 2rem;
+  isolation: isolate;
+  width: 100%;
+  padding: 2rem;
+  color: #e2e8f0;
+}
+
+.policyContainer::before {
+  content: '';
+  position: fixed;
+  width: 200%;
+  height: 200%;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(116, 58, 213, 0.03) 0%,
+    rgba(116, 58, 213, 0.03) 1%,
+    transparent 1%,
+    transparent 2%
+  );
+  animation: backgroundShift 40s linear infinite;
+  z-index: 0;
+}
+
+/* Main Content Container */
+.policyContent {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1200px;
+  margin: 2rem auto;
+  margin-top: 180px;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 24px;
+  padding: 3rem;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(46, 213, 115, 0.1);
+  animation: contentFadeIn 0.6s ease-out;
+}
+
+/* Title Styles */
+.mainTitle {
+  color: #2ED573;
+  font-size: 40px;
+  text-align: center;
+  margin-bottom: 4rem;
+  text-shadow: 
+    0 0 20px rgba(46, 213, 115, 0.3),
+    0 0 40px rgba(46, 213, 115, 0.2);
+  position: relative;
+  animation: titleGlow 3s ease-in-out infinite;
+}
+
+.mainTitle::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(46, 213, 115, 0.5), 
+    rgba(46, 213, 115, 0.8), 
+    rgba(46, 213, 115, 0.5), 
+    transparent
+  );
+}
+
+/* Section Styles */
+.section {
+  margin-bottom: 4rem;
+  padding: 2.5rem;
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 16px;
+  border: 1px solid rgba(46, 213, 115, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  position: relative;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.section:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(46, 213, 115, 0.2);
+}
+
+.section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at 50% 0%, 
+    rgba(46, 213, 115, 0.1), 
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.section:hover::before {
+  opacity: 1;
+}
+.section h2 {
+  color: #2ED573;
+  font-size: 24px;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.section h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    #2ED573 0%,
+    rgba(46, 213, 115, 0.5) 50%,
+    transparent 100%
+  );
+}
+
+.section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.section ul li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+  color: #e2e8f0;
+  font-size: 1.1rem;
+}
+
+.section ul li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.7rem;
+  width: 6px;
+  height: 6px;
+  background-color: #2ED573;
+  border-radius: 50%;
+}
+
+.section ul li:hover::before {
+  transform: scale(1.5);
+  transition: transform 0.2s ease;
+}
+
+.section p {
+  color: #e2e8f0;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  max-width: 800px;
+}
+
+/* Subsection Styles */
+.subsection {
+  margin-bottom: 2.5rem;
+  padding-left: 2rem;
+  max-width: 1000px;
+  position: relative;
+}
+
+.subsection h3 {
+  color: #ffffff;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  padding-left: 1rem;
+  transition: color 0.3s;
+}
+
+.subsection h3::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 70%;
+  background: #2ED573;
+  border-radius: 2px;
+  transition: height 0.3s;
+}
+
+.subsection:hover h3::before {
+  height: 90%;
+}
+
+.subsection ul,
+.subsection ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+  list-style-position: outside;
+}
+
+.subsection li {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+  color: #cbd5e0;
+  position: relative;
+  padding-left: 0.5rem;
+  transition: transform 0.2s;
+}
+
+.subsection li:hover {
+  transform: translateX(5px);
+}
+
+/* Cookie Section Styles */
+.cookieType {
+  margin: 2rem 0;
+  padding: 2rem;
+  background: rgba(15, 23, 42, 0.3);
+  border-radius: 12px;
+  border-left: 3px solid #2ED573;
+  transition: all 0.3s ease;
+}
+
+.cookieType:hover {
+  background: rgba(15, 23, 42, 0.4);
+  transform: translateX(5px);
+}
+
+.cookieType h4 {
+  color: #2ED573;
+  font-size: 1.25rem;
+  margin-bottom: 12px;
+  position: relative;
+  display: inline-block;
+}
+
+/* Contact Form Styles */
+.contactForm {
+  margin-top: 2rem;
+  padding: 2.5rem;
+  
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: 16px;
+  border: 1px solid rgba(46, 213, 115, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.contactForm::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at center,
+    rgba(46, 213, 115, 0.1),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.contactForm:hover::before {
+  opacity: 1;
+}
+
+.formGroup {
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: #e2e8f0;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.formGroup:focus-within label {
+  color: #2ED573;
+}
+
+.formGroup input{  width: 100%;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(46, 213, 115, 0.2);
+  border-radius: 8px;
+  color: #e2e8f0;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 
+    inset 0 2px 4px rgba(0, 0, 0, 0.1),
+    0 0 0 transparent;
+  }
+.formGroup textarea {
+  width: 100%;
+  max-width: 100%;
+  min-width: 100%;
+  height: 150px; /* Fixed height */
+  min-height: 150px;
+  max-height: 150px;
+  resize: none; /* Prevents user resizing */
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(46, 213, 115, 0.2);
+  border-radius: 8px;
+  color: #e2e8f0;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 
+    inset 0 2px 4px rgba(0, 0, 0, 0.1),
+    0 0 0 transparent;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus {
+  outline: none;
+  border-color: #2ED573;
+  box-shadow: 
+    inset 0 2px 4px rgba(0, 0, 0, 0.1),
+    0 0 0 3px rgba(46, 213, 115, 0.2);
+  transform: translateY(-1px);
+}
+
+.submitButton {
+  background: linear-gradient(135deg, #2ED573 0%, #1a9f55 100%);
+  color: white;
+  padding: 1rem 2.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.submitButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.submitButton:hover::before {
+  left: 100%;
+}
+
+.submitButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 4px 12px rgba(46, 213, 115, 0.3),
+    0 0 0 2px rgba(46, 213, 115, 0.2);
+}
+
+.submitButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Status Messages */
+.successMessage,
+.errorMessage {
+  animation: messageSlideIn 0.3s ease-out forwards;
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.successMessage {
+  background: rgba(46, 213, 115, 0.1);
+  border: 1px solid rgba(46, 213, 115, 0.3);
+  color: #2ED573;
+}
+
+.errorMessage {
+  background: rgba(255, 68, 68, 0.1);
+  border: 1px solid rgba(255, 68, 68, 0.3);
+  color: #ff4444;
+}
+
+/* Footer Styles */
+.policyFooter {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  text-align: center;
+  font-size: 1rem;
+  color: #718096;
+  border-top: 1px solid rgba(46, 213, 115, 0.2);
+  position: relative;
+}
+
+.policyFooter::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(46, 213, 115, 0.3),
+    transparent
+  );
+}
+
+/* Animations */
+@keyframes contentFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes titleGlow {
+  0%, 100% {
+    text-shadow: 
+      0 0 20px rgba(46, 213, 115, 0.3),
+      0 0 40px rgba(46, 213, 115, 0.2);
+  }
+  50% {
+    text-shadow: 
+      0 0 25px rgba(46, 213, 115, 0.4),
+      0 0 50px rgba(46, 213, 115, 0.3);
+  }
+}
+
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes headingUnderline {
+  0%, 100% {
+    width: 50%;
+  }
+  50% {
+    width: 75%;
+  }
+}
+
+@keyframes backgroundShift {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .policyContainer {
+    padding: 1.5rem;
+  }
+  
+  .policyContent {
+    padding: 2rem;
+  }
+  
+  .mainTitle {
+    font-size: 3rem;
+  }
+  
+  .section h2 {
+    font-size: 2rem;
+  }
+
+  .section {
+    padding: 2rem;
+  }
+}
+/* Continue media queries from previous styles... */
+
+@media (max-width: 768px) {
+  .formGroup input,
+  .formGroup textarea {
+    padding: 0.75rem;
+    font-size: 0.95rem;
+  }
+
+  .submitButton {
+    width: 100%;
+    padding: 0.875rem 2rem;
+    font-size: 1rem;
+  }
+
+  .subsection li {
+    margin-bottom: 0.875rem;
+    font-size: 0.95rem;
+  }
+
+  .successMessage,
+  .errorMessage {
+    padding: 0.875rem;
+    font-size: 0.95rem;
+  }
+
+  .cookieType h4 {
+    font-size: 1.15rem;
+  }
+
+  .formGroup label {
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .policyFooter {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .policyContainer {
+    padding: 0.75rem;
+  }
+
+  .policyContent {
+    padding: 1.25rem;
+    margin-top: 40px;
+    border-radius: 16px;
+  }
+
+  .mainTitle {
+    font-size: 2rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .section {
+    padding: 1.25rem;
+    margin-bottom: 2.5rem;
+    border-radius: 12px;
+  }
+
+  .section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .subsection {
+    padding-left: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .subsection h3 {
+    font-size: 1.15rem;
+    margin-bottom: 1rem;
+  }
+
+  .subsection h3::before {
+    width: 2px;
+  }
+
+  .subsection ul,
+  .subsection ol {
+    padding-left: 1.25rem;
+  }
+
+  .subsection li {
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .cookieType {
+    padding: 1.25rem;
+    margin: 1.5rem 0;
+  }
+
+  .cookieType h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.875rem;
+  }
+
+  .contactForm {
+    padding: 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .formGroup {
+    margin-bottom: 1.5rem;
+  }
+
+  .formGroup label {
+    font-size: 0.9rem;
+    margin-bottom: 0.375rem;
+  }
+
+  .formGroup input,
+  .formGroup textarea {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+    border-radius: 6px;
+  }
+
+  .submitButton {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+    border-radius: 6px;
+  }
+
+  .successMessage,
+  .errorMessage {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+    border-radius: 6px;
+  }
+}
+
+@media (max-width: 375px) {
+  .policyContainer {
+    padding: 0.5rem;
+  }
+
+  .policyContent {
+    padding: 1rem;
+    margin-top: 30px;
+  }
+
+  .mainTitle {
+    font-size: 1.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .section {
+    padding: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .section h2 {
+    font-size: 1.35rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .subsection {
+    padding-left: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .subsection h3 {
+    font-size: 1.1rem;
+    padding-left: 0.75rem;
+  }
+
+  .subsection ul,
+  .subsection ol {
+    padding-left: 1rem;
+  }
+
+  .cookieType {
+    padding: 1rem;
+    margin: 1.25rem 0;
+  }
+
+  .contactForm {
+    padding: 1rem;
+  }
+
+  .formGroup {
+    margin-bottom: 1.25rem;
+  }
+
+  .formGroup input,
+  .formGroup textarea {
+    padding: 0.625rem;
+  }
+
+  .submitButton {
+    padding: 0.625rem 1.25rem;
+  }
+
+  .policyFooter {
+    margin-top: 2rem;
+    padding-top: 1.25rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .formGroup input,
+  .formGroup textarea {
+    background: rgba(15, 23, 42, 0.7);
+  }
+
+  .section {
+    background: rgba(15, 23, 42, 0.6);
+  }
+
+  .cookieType {
+    background: rgba(15, 23, 42, 0.4);
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .mainTitle,
+  .section h2,
+  .cookieType h4 {
+    color: #33FF88;
+  }
+
+  .formGroup input,
+  .formGroup textarea {
+    border-color: #33FF88;
+  }
+
+  .submitButton {
+    background: #33FF88;
+    color: #000000;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .policyContainer::before,
+  .submitButton::before,
+  .section:hover,
+  .subsection li:hover,
+  .formGroup input:focus,
+  .formGroup textarea:focus {
+    animation: none;
+    transition: none;
+    transform: none;
+  }
+
+  .mainTitle,
+  .section h2::after {
+    animation: none;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .policyContainer {
+    background: none;
+    padding: 0;
+  }
+
+  .policyContainer::before {
+    display: none;
+  }
+
+  .policyContent {
+    box-shadow: none;
+    margin: 0;
+    padding: 2cm;
+    max-width: none;
+  }
+
+  .contactForm {
+    display: none;
+  }
+
+  .mainTitle,
+  .section h2 {
+    color: #000000;
+    text-shadow: none;
+  }
+
+  .section {
+    break-inside: avoid;
+    background: none;
+    border: 1px solid #000000;
+  }
+
+  .cookieType {
+    border-left: 2px solid #000000;
+  }
+}

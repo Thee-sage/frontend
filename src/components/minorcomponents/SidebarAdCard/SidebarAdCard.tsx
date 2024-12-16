@@ -19,38 +19,44 @@ export const SidebarAdCard = ({ ad }: SidebarAdCardProps) => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.imageWrapper}>
-        <img
-          src={getImageUrl()}
-          alt={ad.title}
-          className={`${styles.image} ${imageError ? styles.fallbackImage : ''}`}
-          onError={() => setImageError(true)}
-          loading="lazy"
-        />
+      <div className={styles.header}>
+        <div className={styles.piccontainer}>
+          <div className={styles.pic}>
+            <img
+              src={getImageUrl()}
+              alt={ad.title}
+              className={styles.logo}
+              onError={() => setImageError(true)}
+              loading="lazy"
+            />
+          </div>
+        </div>
+        <span className={styles.title}>{ad.title}</span>
       </div>
-      
+
       <div className={styles.content}>
         <div className={styles.bonus}>
-          {ad.title}
+          {ad.description}
         </div>
 
-        <div className={styles.ratingContainer}>
-          Our rating: 
-          <span className={styles.ratingValue}>{ad.rating.toFixed(1)}</span>
-          <span className={styles.ratingMax}>/5</span>
-          <span className={styles.star}>⭐</span>
+        <div className={styles.ratingWrapper}>
+          <span className={styles.ratingLabel}>Our rating:</span>
+          <div className={styles.ratingContent}>
+            <span className={styles.star}>⭐</span>
+            <span className={styles.rating}>{ad.rating}/5</span>
+          </div>
         </div>
+
+        <a 
+          href={ad.link}
+          className={styles.visitButton}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span>Visit Site</span>
+          <span className={styles.arrow}>›</span>
+        </a>
       </div>
-
-      <a 
-        href={ad.link} 
-        target="_blank" 
-        rel="noopener noreferrer" 
-        className={styles.visitButton}
-      >
-        Visit Site
-        <span className={styles.arrow}>›</span>
-      </a>
     </div>
   );
 };

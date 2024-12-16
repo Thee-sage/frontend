@@ -30,34 +30,28 @@ export const StandardAdCard = ({ ad }: StandardAdCardProps) => {
       <div className={styles.adLogo}>
         {ad.title}
       </div>
-      <div className={styles.adRatingContainer}>
-        <span className={styles.adRatingLabel}>Our rating:</span>
-        <span className={styles.adRatingValue}>{ad.rating.toFixed(1)}</span>
-        <span className={styles.adRatingMax}>/5</span>
-      </div>
+      <div className={styles.ratingWrapper}>
+          <span className={styles.ratingLabel}>Our rating:</span>
+          <div className={styles.ratingContent}>
+            <span className={styles.star}>⭐</span>
+            <span className={styles.rating}>{ad.rating}/5</span>
+          </div>
+        </div>
+     
       <div className={styles.adFeature}>
         {ad.description}
       </div>
+      <div className={styles.visi}>
       <a 
-        href={ad.link} 
-        target="_blank" 
-        rel="noopener noreferrer" 
-        className={styles.visitSiteButton}
-      >
-        Visit Site
-        <svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          viewBox="0 0 20 20" 
-          fill="currentColor"
-          className="w-4 h-4 ml-1"
+          href={ad.link}
+          className={styles.visitButton}
+          target="_blank"
+          rel="noopener noreferrer"
         >
-          <path 
-            fillRule="evenodd" 
-            d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" 
-            clipRule="evenodd" 
-          />
-        </svg>
-      </a>
+          <span>Visit Site</span>
+          <span className={styles.arrow}>›</span>
+        </a>
+        </div>
     </div>
   );
 };

@@ -1,122 +1,128 @@
 .adContainer {
-    background: white;
-    border-radius: 20px;
-    padding: 24px;
-    transition: all 0.2s ease;
-    width: 280px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  }
-  
-  .adContainer:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  .adImageContainer {
-    position: relative;
-    width: 100%;
-    height: 100px;
-    overflow: hidden;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    background: #f8f9fa;
-  }
-  
-  .adImage {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    padding: 12px;
-  }
-  
-  .adImageFallback {
-    object-fit: contain;
-    padding: 12px;
-    background-color: #f8f9fa;
-  }
-  
-  .adLogo {
-    font-size: 20px;
-    font-weight: 500;
-    color: #1a1a1a;
-    margin-bottom: 12px;
-    text-align: center;
-  }
-  
-  .adRatingContainer {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 4px;
-    margin-bottom: 12px;
-    color: #666;
-  }
-  
-  .adRatingLabel {
-    font-size: 14px;
-    color: #666;
-  }
-  
-  .adRatingValue {
-    font-weight: 600;
-    color: #1a1a1a;
-  }
-  
-  .adRatingMax {
-    color: #666;
-  }
-  
-  .adFeature {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 20px;
-    line-height: 1.4;
-  }
-  
-  .visitSiteButton {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    width: 100%;
-    padding: 12px 16px;
-    background-color: #2563eb;
-    color: white;
-    border-radius: 8px;
-    font-weight: 500;
-    transition: background-color 0.2s ease;
-    text-decoration: none;
-  }
-  
-  .visitSiteButton:hover {
-    background-color: #1d4ed8;
-  }
-  
-  .visitSiteButton svg {
-    margin-left: auto;
-    width: 20px;
-    height: 20px;
-  }
-  .adsGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
-    padding: 24px;
-    justify-items: center;
-  }
-  
-  .sidebarAds {
-    position: fixed;
-    right: 24px;
-    top: 25%;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    z-index: 10;
-    max-height: 70vh;
-    overflow-y: auto;
-  }
-  
-  .footerAds {
-    margin-top: 40px;
-    padding-bottom: 40px;
-  }
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  transition: all 0.2s ease;
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  height: 450px;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.05);
+}
+
+.adContainer:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.adImageContainer {
+  position: relative;
+  width: 100%;
+  height: 140px;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  background: #f8f9fa;
+}
+
+.adImage {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 12px;
+}
+.adImage:hover {
+  transform: translateY(-2px);
+}
+.adImageFallback {
+  object-fit: contain;
+  padding: 12px;
+  background-color: #f8f9fa;
+}
+
+.adLogo {
+  font-size: 20px;
+  font-weight: 500;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.ratingWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ratingLabel {
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.ratingContent {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #000;
+}
+
+.star {
+  color: #FFD700;
+}
+
+.rating {
+  font-size: 0.875rem;
+}
+
+.adFeature {
+  font-size: 14px;
+  color: #666;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.visitButton {
+  background: #F5F5F5;
+  color: #000;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 0.875rem;
+}
+
+.visitButton:hover {
+  background: #EBEBEB;
+}
+.visitButton:focus{
+  outline: none;
+}
+.arrow {
+  color: #DC2626;
+  font-size: 1.25rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  /* Removed flex-direction: column and position: relative */
+}
+.visi{
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+}
+.adsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  padding: 24px;
+  justify-items: center;
+}
+

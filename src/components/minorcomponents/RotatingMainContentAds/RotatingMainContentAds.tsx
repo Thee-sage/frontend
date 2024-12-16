@@ -14,9 +14,8 @@ export const RotatingMainContentAds = ({ ads }: RotatingMainContentAdsProps) => 
   const [currentAdIndex, setCurrentAdIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [settings, setSettings] = useState<{ totalCycleTime: number | null }>({ totalCycleTime: null });
-  const timeoutIdRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
   const transitionIdRef = useRef<NodeJS.Timeout | null>(null);
-  const startTimeRef = useRef<number>(0);
   const sortedAdsRef = useRef<Ad[]>([]);
 
   useEffect(() => {
@@ -31,12 +30,16 @@ export const RotatingMainContentAds = ({ ads }: RotatingMainContentAdsProps) => 
         setSettings({ totalCycleTime: response.data.totalCycleTime });
       } catch (error) {
         console.error('Error fetching settings:', error);
-        setSettings({ totalCycleTime: 600000 }); // 10 minute fallback
+        setSettings({ totalCycleTime: 600000 });
       }
     };
 
     fetchSettings();
     socket.on("settings_updated", (updatedSettings) => {
+      console.log('Settings updated:', {
+        totalCycleTime: updatedSettings.totalCycleTime / 60000,
+        isFallback: false
+      });
       setSettings({ totalCycleTime: updatedSettings.totalCycleTime });
     });
 
@@ -50,7 +53,8 @@ export const RotatingMainContentAds = ({ ads }: RotatingMainContentAdsProps) => 
     if (!ads?.length || settings.totalCycleTime === null) return;
 
     const cleanup = () => {
-      if (timeoutIdRef.current) clearTimeout(timeoutIdRef.current);
+      console.log('1. Cleaning up previous rotation cycle');
+      if (intervalIdRef.current) clearInterval(intervalIdRef.current);
       if (transitionIdRef.current) clearTimeout(transitionIdRef.current);
     };
 
@@ -69,36 +73,26 @@ export const RotatingMainContentAds = ({ ads }: RotatingMainContentAdsProps) => 
       Math.floor((weight / totalWeight) * settings.totalCycleTime!)
     );
 
-    console.log('Rotation config:', {
-      totalCycleTime: settings.totalCycleTime! / 60000,
-      isFallback: settings.totalCycleTime === 600000,
-      displayTimes: displayTimes.map((time, i) => ({
-        ad: sortedAdsRef.current[i].title,
-        minutes: time / 60000,
-        order: sortedAdsRef.current[i].orderInCasinosPage
-      }))
-    });
 
-    const rotateAds = () => {
-      if (!sortedAdsRef.current[currentAdIndex]) {
-        setCurrentAdIndex(0);
-        return;
-      }
 
+    const rotateAd = () => {
       setIsTransitioning(true);
       
       transitionIdRef.current = setTimeout(() => {
         setIsTransitioning(false);
-        const nextIndex = (currentAdIndex + 1) % numAds;
-        setCurrentAdIndex(nextIndex);
-        
-        timeoutIdRef.current = setTimeout(rotateAds, displayTimes[nextIndex]);
+        setCurrentAdIndex(prevIndex => {
+          const nextIndex = (prevIndex + 1) % numAds;
+          console.log('2. Rotation State:', {
+            previousAd: sortedAdsRef.current[prevIndex].title,
+            nextAd: sortedAdsRef.current[nextIndex].title,
+            displayTimeMinutes: displayTimes[nextIndex] / 60000
+          });
+          return nextIndex;
+        });
       }, 300);
     };
 
-    setCurrentAdIndex(0);
-    startTimeRef.current = Date.now();
-    timeoutIdRef.current = setTimeout(rotateAds, displayTimes[0]);
+    intervalIdRef.current = setInterval(rotateAd, displayTimes[currentAdIndex]);
 
     return cleanup;
   }, [ads, settings.totalCycleTime]);

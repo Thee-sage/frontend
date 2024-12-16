@@ -3,7 +3,7 @@ import { Routes, Route, useNavigate, Link, useLocation } from "react-router-dom"
 import { Label } from '../compo/ui/label';
 import { cn } from '../compo/lib/utils';
 import { Input } from '../compo/ui/input';
-import GoogleLoginComponent  from '../auth/google/googlelogin';
+import GoogleLoginComponent from '../auth/google/googlelogin';
 import { useAuth } from "../contexts/authcontext";
 import ForgotPassword from '../forgotpassword';
 import { baseURL } from '../utils';
@@ -16,56 +16,48 @@ const AuthContainer = () => {
 
   return (
     <div className={styles.pageContainer}>
-      {/* Background overlay */}
       <div className={styles.backgroundOverlay} />
       
-      {/* Main content */}
       <div className={styles.contentContainer}>
         <div className={styles.formContainer}>
-          {/* Logo */}
           <div className={styles.logo}>
-            <img src={logo} alt="Logo" className="h-12 w-auto mb-8" />
+            <img src={logo} alt="Logo" className={styles.logoImage} />
           </div>
 
-          {/* Header */}
-          <h2 className="font-bold text-2xl text-white mb-2">
+          <h2 className={styles.header}>
             {isLoginRoute ? 'Welcome back' : 'Join us'}
           </h2>
-          <p className="text-neutral-400 text-sm mb-8">
+          <p className={styles.subheader}>
             {isLoginRoute 
               ? "Sign in to your account to continue"
               : "Create an account to get started"
             }
           </p>
 
-          {/* Auth Forms */}
           <Routes>
             <Route path="login" element={<LoginForm />} />
             <Route path="signup" element={<SignupForm />} />
           </Routes>
 
-          {/* Divider */}
           <div className={styles.divider}>
-            <span className="text-neutral-500 text-sm px-4 bg-[#0d0d15]">
+            <div className={styles.dividerLine} />
+            <div className={styles.dividerText}>
               or continue with
-            </span>
+            </div>
           </div>
 
-          {/* Google Login */}
-          <div className="flex flex-col space-y-4">
-            <div className="relative">
+          <div>
+            <div>
               <div className={styles.gg}>
                 <GoogleLoginComponent />
               </div>
             </div>
           </div>
-
-          {/* Footer Links */}
-          <p className="text-neutral-400 text-sm mt-6 text-center">
+          <p className={styles.footerText}>
             {isLoginRoute ? "Don't have an account?" : 'Already have an account?'}
             <Link 
               to={isLoginRoute ? '/auth/signup' : '/auth/login'} 
-              className="ml-1 text-purple-400 hover:text-purple-300 font-medium"
+              className={styles.footerLink}
             >
               {isLoginRoute ? 'Sign Up' : 'Login'}
             </Link>
@@ -107,10 +99,10 @@ const LoginForm = () => {
   };
 
   return (
-    <form className="space-y-4" onSubmit={step === 'email' ? handleLoginEmailSubmit : handleSubmit}>
+    <form className={styles.form} onSubmit={step === 'email' ? handleLoginEmailSubmit : handleSubmit}>
       {step === 'email' ? (
         <LabelInputContainer>
-          <Label htmlFor="email" className="text-neutral-200">Email Address</Label>
+          <Label htmlFor="email" className={styles.label}>Email Address</Label>
           <Input
             id="email"
             type="email"
@@ -123,7 +115,7 @@ const LoginForm = () => {
         </LabelInputContainer>
       ) : (
         <LabelInputContainer>
-          <Label htmlFor="password" className="text-neutral-200">Password</Label>
+          <Label htmlFor="password" className={styles.label}>Password</Label>
           <Input
             id="password"
             type="password"
@@ -137,21 +129,15 @@ const LoginForm = () => {
       )}
 
       <button
-        className={cn(
-          "w-full h-12 rounded-lg font-medium text-white",
-          "bg-gradient-to-r from-purple-600 to-purple-400",
-          "hover:from-purple-500 hover:to-purple-300",
-          "transition-all duration-200",
-          styles.submitButton
-        )}
+        className={cn(styles.submitButton, styles.buttonGradient)}
         type="submit"
       >
         {step === 'email' ? 'Continue' : 'Login'} →
         <BottomGradient />
       </button>
 
-      {loginError && <p className="text-red-400 text-sm">{loginError}</p>}
-      {loginSuccess && <p className="text-green-400 text-sm">{loginSuccess}</p>}
+      {loginError && <p className={styles.errorText}>{loginError}</p>}
+      {loginSuccess && <p className={styles.successText}>{loginSuccess}</p>}
     </form>
   );
 };
@@ -196,10 +182,10 @@ const SignupForm = () => {
   };
 
   return (
-    <form className="space-y-4" onSubmit={handleSubmit}>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <form className={styles.form} onSubmit={handleSubmit}>
+      <div className={styles.nameGridContainer}>
         <LabelInputContainer>
-          <Label htmlFor="firstname" className="text-neutral-200">First name</Label>
+          <Label htmlFor="firstname" className={styles.label}>First name</Label>
           <Input
             id="firstname"
             type="text"
@@ -211,7 +197,7 @@ const SignupForm = () => {
           />
         </LabelInputContainer>
         <LabelInputContainer>
-          <Label htmlFor="lastname" className="text-neutral-200">Last name</Label>
+          <Label htmlFor="lastname" className={styles.label}>Last name</Label>
           <Input
             id="lastname"
             type="text"
@@ -225,7 +211,7 @@ const SignupForm = () => {
       </div>
 
       <LabelInputContainer>
-        <Label htmlFor="email" className="text-neutral-200">Email Address</Label>
+        <Label htmlFor="email" className={styles.label}>Email Address</Label>
         <Input
           id="email"
           type="email"
@@ -238,7 +224,7 @@ const SignupForm = () => {
       </LabelInputContainer>
 
       <LabelInputContainer>
-        <Label htmlFor="password" className="text-neutral-200">Password</Label>
+        <Label htmlFor="password" className={styles.label}>Password</Label>
         <Input
           id="password"
           type="password"
@@ -251,21 +237,15 @@ const SignupForm = () => {
       </LabelInputContainer>
 
       <button
-        className={cn(
-          "w-full h-12 rounded-lg font-medium text-white",
-          "bg-gradient-to-r from-purple-600 to-purple-400",
-          "hover:from-purple-500 hover:to-purple-300",
-          "transition-all duration-200",
-          styles.submitButton
-        )}
+        className={cn(styles.submitButton, styles.buttonGradient)}
         type="submit"
       >
         Sign up →
         <BottomGradient />
       </button>
 
-      {signupError && <p className="text-red-400 text-sm">{signupError}</p>}
-      {signupSuccess && <p className="text-green-400 text-sm">{signupSuccess}</p>}
+      {signupError && <p className={styles.errorText}>{signupError}</p>}
+      {signupSuccess && <p className={styles.successText}>{signupSuccess}</p>}
     </form>
   );
 };
@@ -273,18 +253,8 @@ const SignupForm = () => {
 const BottomGradient = () => {
   return (
     <>
-      <span className={cn(
-        "absolute inset-x-0 -bottom-px h-px w-full",
-        "bg-gradient-to-r from-transparent via-purple-400 to-transparent",
-        "opacity-0 group-hover:opacity-100 transition-opacity duration-500",
-        styles.bottomGradient
-      )} />
-      <span className={cn(
-        "absolute inset-x-10 -bottom-px h-px w-1/2 mx-auto",
-        "bg-gradient-to-r from-transparent via-purple-300 to-transparent",
-        "opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm",
-        styles.bottomGradientBlur
-      )} />
+      <span className={cn(styles.bottomGradient, styles.bottomGradientBase)} />
+      <span className={cn(styles.bottomGradientBlur, styles.bottomGradientBlurBase)} />
     </>
   );
 };
@@ -297,7 +267,7 @@ const LabelInputContainer = ({
   className?: string;
 }) => {
   return (
-    <div className={cn("flex flex-col space-y-2", className)}>
+    <div className={cn(styles.labelInputContainer, className)}>
       {children}
     </div>
   );

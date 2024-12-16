@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { baseURL } from './utils';
+import styles from './forgotPassword.module.css';
+
 const ForgotPassword = () => {
+    const [isOpen, setIsOpen] = useState(false);
     const [email, setEmail] = useState('');
     const [token, setToken] = useState('');
     const [newPassword, setNewPassword] = useState('');
@@ -25,13 +28,13 @@ const ForgotPassword = () => {
             const data = await response.json();
             
             if (response.ok) {
-                setMessage(data.message);
+                setMessage('OTP sent to your email for password reset.');
                 setShowTokenInput(true);
             } else {
                 throw new Error(data.message);
             }
-        } catch (error: any) {
-            setMessage(error.message);
+        } catch (error) {
+            setMessage(error instanceof Error ? error.message : 'An error occurred');
             setShowTokenInput(false);
         } finally {
             setIsLoading(false);
@@ -60,80 +63,115 @@ const ForgotPassword = () => {
             
             if (response.ok) {
                 setMessage('Password reset successful. Please login with your new password.');
-                // Reset all fields
                 setEmail('');
                 setToken('');
                 setNewPassword('');
                 setShowTokenInput(false);
+                setIsOpen(false);
             } else {
                 throw new Error(data.message);
             }
-        } catch (error: any) {
-            setMessage(error.message);
+        } catch (error) {
+            setMessage(error instanceof Error ? error.message : 'An error occurred');
         } finally {
             setIsLoading(false);
         }
     };
 
+    const getMessageType = (msg: string) => {
+        if (msg.includes('OTP sent')) return 'infoMessage';
+        if (msg.includes('successful')) return 'successMessage';
+        return 'errorMessage';
+    };
+    if (!isOpen) {
+        return (
+            <div className={styles.forgotButtonWrapper}>
+                <button 
+                    onClick={() => setIsOpen(true)}
+                    className={styles.forgotButton}
+                >
+                    Forgot Password?
+                </button>
+            </div>
+        );
+    }
+
     return (
-        <div className="mt-4 p-4 border-t border-gray-200">
-            <h3 className="text-lg font-semibold mb-4">Forgot Password?</h3>
-            
+        <div className={styles.forgotContainer}>
+            <h3 className={styles.formTitle}>Forgot Password</h3>
+
             {!showTokenInput ? (
-                <div className="space-y-4">
-                    <input
-                        type="email"
-                        placeholder="Enter your email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full p-2 border rounded"
-                        disabled={isLoading}
-                    />
+                <>
+                    <div className={styles.inputGroup}>
+                        <label className={styles.inputLabel}>Your Email Address</label>
+                        <input
+                            type="email"
+                            placeholder="abc@example.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className={styles.input}
+                            disabled={isLoading}
+                        />
+                    </div>
                     <button
                         onClick={handleInitiateReset}
                         disabled={isLoading}
-                        className="w-full p-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-blue-300"
+                        className={styles.resetButton}
                     >
                         {isLoading ? 'Processing...' : 'Reset Password'}
                     </button>
-                </div>
+                </>
             ) : (
-                <div className="space-y-4">
-                    <p className="text-sm text-gray-600 mb-4">
-                        A confirmation token has been sent to your email. Please enter it below along with your new password.
-                    </p>
-                    <input
-                        type="text"
-                        placeholder="Enter confirmation token"
-                        value={token}
-                        onChange={(e) => setToken(e.target.value)}
-                        className="w-full p-2 border rounded"
-                        disabled={isLoading}
-                    />
-                    <input
-                        type="password"
-                        placeholder="Enter new password"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        className="w-full p-2 border rounded"
-                        disabled={isLoading}
-                    />
-                    <button
-                        onClick={handleConfirmReset}
-                        disabled={isLoading}
-                        className="w-full p-2 bg-blue-800 text-white rounded hover:bg-blue-900 disabled:bg-blue-300"
-                    >
-                        {isLoading ? 'Processing...' : 'Confirm Password Reset'}
-                    </button>
-                </div>
+                <>
+                    <div className={styles.inputGroup}>
+                        <label className={styles.inputLabel}>Confirmation Token</label>
+                        <input
+                            type="text"
+                            placeholder="Enter the token sent to your email"
+                            value={token}
+                            onChange={(e) => setToken(e.target.value)}
+                            className={styles.input}
+                            disabled={isLoading}
+                        />
+                    </div>
+                    <div className={styles.inputGroup}>
+                        <label className={styles.inputLabel}>New Password</label>
+                        <input
+                            type="password"
+                            placeholder="Enter your new password"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            className={styles.input}
+                            disabled={isLoading}
+                        />
+                    </div>
+                    <div className={styles.buttonGroup}>
+                        <button
+                            onClick={handleConfirmReset}
+                            disabled={isLoading}
+                            className={styles.resetButton}
+                        >
+                            {isLoading ? 'Processing...' : 'Confirm Reset'}
+                        </button>
+                        <button 
+                            onClick={() => {
+                                setIsOpen(false);
+                                setShowTokenInput(false);
+                                setMessage('');
+                                setEmail('');
+                                setToken('');
+                                setNewPassword('');
+                            }}
+                            className={styles.cancelButton}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </>
             )}
 
             {message && (
-                <div className={`mt-4 p-3 rounded ${
-                    message.includes('successful') 
-                        ? 'bg-green-100 text-green-700' 
-                        : 'bg-red-100 text-red-700'
-                }`}>
+                <div className={`${styles.message} ${styles[getMessageType(message)]}`}>
                     {message}
                 </div>
             )}
