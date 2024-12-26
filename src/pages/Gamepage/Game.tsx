@@ -9,7 +9,6 @@ import Zixoslogo from "../../assets/zixos";
 interface GameSettings {
   maxBallPrice: number;
   minBallPrice: number;
-  // Add other settings as needed
 }
 
 export function Game() {

@@ -1,5 +1,4 @@
 import styles from './Footer.module.css';
-import { MessageCircle, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const Footer = () => {
@@ -26,20 +25,7 @@ export const Footer = () => {
           </ul>
         </div>
 
-        <div className={styles.footerSection}>
-          <h3>Community</h3>
-          <div className={styles.socialLinks}>
-          
-            <a href="https://discord.com" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>
-              <MessageCircle size={20} />
-              <span>Discord</span>
-            </a>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>
-              <X size={20} />
-              <span>X</span>
-            </a>
-          </div>
-        </div>
+   
 
         <div className={styles.footerSection}>
           <h3>Responsible Gaming</h3>

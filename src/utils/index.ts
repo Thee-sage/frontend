@@ -1,1 +1,1 @@
-export const baseURL = "https://backend-439b.onrender.com";
+export const baseURL = import.meta.env.VITE_API_URL;
